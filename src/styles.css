@@ -1,1 +1,106 @@
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-ivory: #faf8f4;
+  --color-ivory-deep: #f2eee6;
+  --color-charcoal: #1f2421;
+  --color-charcoal-soft: #4d554f;
+  --color-charcoal-mute: #5d6660;
+
+  --color-forest: #2f4a3a;
+  --color-forest-deep: #1e3328;
+  --color-forest-soft: #4b6a58;
+
+  --color-gold: #a8894f;
+  --color-gold-soft: #c9a961;
+  --color-sand: #e5dcca;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchor targets so the fixed header never covers a heading. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .u-container {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .u-container {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Small uppercase label used above section headings. */
+  .u-eyebrow {
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-gold);
+  }
+
+  .u-rule {
+    width: 2.5rem;
+    height: 1px;
+    background-color: var(--color-gold-soft);
+  }
+
+  /* View and toggle buttons of the 3D viewer, styled as in the reference model. */
+  .model-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 13px;
+    line-height: 1.4;
+    border: 1px solid rgb(31 36 33 / 0.14);
+    border-radius: 7px;
+    padding: 6px 11px;
+    color: var(--color-charcoal);
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--color-charcoal);
+    }
+
+    &[aria-pressed='true'] {
+      background-color: var(--color-forest);
+      border-color: var(--color-forest);
+      color: #f6f3ec;
+    }
+
+    @media (max-width: 640px) {
+      font-size: 12px;
+      padding: 6px 9px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -1,16 +1,14 @@
-import { Component, afterNextRender, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, afterNextRender, inject } from '@angular/core';
+import { ModelViewer } from './components/model-viewer/model-viewer';
 import { Analytics } from './shared/analytics';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  imports: [ModelViewer],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  protected readonly title = signal('grigor-zohrap-130');
-
   constructor() {
     const analytics = inject(Analytics);
     // Browser-only: the prerender pass has no document to attach the tag to.

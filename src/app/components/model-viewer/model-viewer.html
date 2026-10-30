@@ -1,0 +1,134 @@
+<div class="relative bg-[#cfd9de]">
+  <div
+    #stage
+    class="relative h-[62svh] min-h-[22rem] overflow-hidden md:h-[calc(100svh-5rem)] md:max-h-[60rem]"
+  >
+    <!-- The canvas is inserted before this layer; room labels are positioned over it. -->
+    <div
+      #labelLayer
+      class="pointer-events-none absolute inset-0 overflow-hidden"
+      aria-hidden="true"
+    ></div>
+
+    @if (status() === 'loading') {
+      <p
+        class="absolute inset-0 flex items-center justify-center text-sm text-charcoal-soft"
+        role="status"
+      >
+        Loading 3D model…
+      </p>
+    } @else if (status() === 'unsupported') {
+      <p
+        class="absolute inset-x-4 top-1/2 -translate-y-1/2 text-center text-sm text-charcoal-soft"
+        role="alert"
+      >
+        The 3D view needs WebGL, which this browser didn't provide. The floor plans below show the
+        same layout.
+      </p>
+    }
+
+    <p
+      class="absolute top-4 right-4 hidden rounded-lg border border-charcoal/14 bg-ivory/92 px-2.5 py-1.5 text-xs text-charcoal-soft backdrop-blur-sm md:block"
+    >
+      Drag to rotate · scroll or pinch to zoom · right-drag to pan
+    </p>
+  </div>
+
+  <div
+    class="border-t border-charcoal/14 bg-ivory/95 p-2.5 md:absolute md:bottom-3.5 md:left-1/2 md:w-[min(980px,calc(100%-24px))] md:-translate-x-1/2 md:rounded-xl md:border md:backdrop-blur-md"
+    role="toolbar"
+    aria-label="Views"
+  >
+    <div class="flex items-center gap-1.5 overflow-x-auto md:flex-wrap md:overflow-visible">
+      <span class="min-w-15.5 shrink-0 text-xs text-charcoal-mute">Exterior</span>
+      @for (view of exteriorViews; track view.id) {
+        <button
+          type="button"
+          class="model-btn"
+          [attr.aria-pressed]="activeView() === view.id"
+          (click)="goTo(view.id)"
+        >
+          {{ view.label }}
+        </button>
+      }
+    </div>
+    <div
+      class="mt-2 flex items-center gap-1.5 overflow-x-auto border-t border-charcoal/14 pt-2 md:flex-wrap md:overflow-visible"
+    >
+      <span class="min-w-15.5 shrink-0 text-xs text-charcoal-mute">Inside</span>
+      @for (view of interiorViews; track view.id) {
+        <button
+          type="button"
+          class="model-btn"
+          [attr.aria-pressed]="activeView() === view.id"
+          (click)="goTo(view.id)"
+        >
+          {{ view.label }}
+        </button>
+      }
+      <span class="flex shrink-0 gap-1.5 md:ml-auto">
+        <button
+          type="button"
+          class="model-btn"
+          [attr.aria-pressed]="showLabels()"
+          (click)="toggleLabels()"
+        >
+          Room labels
+        </button>
+        <button
+          type="button"
+          class="model-btn"
+          [attr.aria-pressed]="showNeighbours()"
+          (click)="toggleNeighbours()"
+        >
+          Neighbours
+        </button>
+        <button
+          type="button"
+          class="model-btn"
+          [attr.aria-pressed]="evening()"
+          (click)="toggleEvening()"
+        >
+          Evening light
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <div
+    class="bg-ivory px-4 py-4 md:absolute md:top-4 md:left-4 md:max-w-[340px] md:rounded-[10px] md:border md:border-charcoal/14 md:bg-ivory/92 md:backdrop-blur-md"
+  >
+    <h1 class="text-[17px] leading-snug font-semibold tracking-[-0.01em]">
+      House over warehouse, 9 × 17 m
+    </h1>
+    <p class="mt-1 text-[13px] leading-[1.45] text-charcoal-soft">
+      Concept model built from Revision 04. White plaster with oak cladding, flat roof with parapet,
+      warm wood interior. Side walls are blind (neighbours).
+    </p>
+    <details class="mt-2 text-[13px] text-charcoal-soft">
+      <summary class="cursor-pointer font-medium text-charcoal">How the plan is read</summary>
+      <ul class="mt-2 list-disc space-y-1 pl-4.5 leading-[1.45]">
+        <li>
+          Ground: L-shaped rental warehouse with WC; private garage front right; U-stair behind the
+          garage, reached only from the garage.
+        </li>
+        <li>
+          Upper: front terrace 9 × 2 m plus a 4 × 4.3 m side terrace; enclosed lobby (5 × 4.3 m)
+          above the garage, landing into the house.
+        </li>
+        <li>
+          House: living + kitchen/dining strip (3.4 m wide) on the left, bath and laundry behind the
+          stair, hall, two bedrooms at the rear, 1.2 m passage to a provisional garden stair.
+        </li>
+        <li>
+          Kitchen, bath and hall get daylight from roof skylights, since side windows aren't
+          possible.
+        </li>
+        <li>
+          The model assumes 3.5 m floor-to-floor below and 2.9 m clear upstairs; Revision 04 leaves
+          final rise and headroom to coordinated design. Furniture and finishes are illustrative.
+        </li>
+      </ul>
+    </details>
+  </div>
+</div>

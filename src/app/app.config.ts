@@ -1,13 +1,10 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
+/**
+ * Single-page site: the router is intentionally not provided, which keeps it
+ * out of the bundle. Navigation is plain in-page anchors.
+ */
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideClientHydration(withEventReplay()),
-  ],
+  providers: [provideBrowserGlobalErrorListeners(), provideClientHydration(withEventReplay())],
 };
