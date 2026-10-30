@@ -1,0 +1,33 @@
+<section id="notes" class="scroll-mt-20 py-20 md:py-28">
+  <div class="u-container">
+    <div class="max-w-2xl" appReveal>
+      <p class="u-eyebrow">Design notes</p>
+      <div class="u-rule mt-4"></div>
+      <h2 class="mt-6 text-3xl font-semibold tracking-[-0.01em] md:text-4xl">How the plan works</h2>
+    </div>
+
+    <div class="mt-12 grid gap-6 sm:grid-cols-2">
+      @for (note of notes; track note.title; let i = $index) {
+        <article class="rounded-lg border border-charcoal/12 bg-white/60 p-6" [appReveal]="i * 70">
+          <h3 class="text-lg font-semibold">{{ note.title }}</h3>
+          <p class="mt-2 text-[0.9375rem] text-charcoal-soft">{{ note.body }}</p>
+          @if (note.source) {
+            <p class="mt-3 text-[0.75rem] text-charcoal-mute">Source: {{ note.source }}</p>
+          }
+        </article>
+      }
+    </div>
+
+    <div class="mt-12 rounded-lg border border-gold/40 bg-sand/40 p-6 md:p-8" appReveal>
+      <h3 class="text-lg font-semibold">To verify</h3>
+      <p class="mt-1 text-[0.875rem] text-charcoal-mute">
+        From the design basis on the {{ revision }} sheet.
+      </p>
+      <ul class="mt-4 list-disc space-y-2 pl-5 text-[0.9375rem] text-charcoal-soft">
+        @for (item of toVerify; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

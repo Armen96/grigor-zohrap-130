@@ -1,0 +1,163 @@
+<section id="plot" class="scroll-mt-20 bg-ivory-deep py-20 md:py-28">
+  <div class="u-container">
+    <div class="max-w-2xl" appReveal>
+      <p class="u-eyebrow">Plot</p>
+      <div class="u-rule mt-4"></div>
+      <h2 class="mt-6 text-3xl font-semibold tracking-[-0.01em] md:text-4xl">The site</h2>
+    </div>
+
+    <div class="mt-12 grid gap-10 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-14">
+      <figure appReveal>
+        <div class="rounded-sm border border-charcoal/10 bg-white p-4">
+          <svg
+            [attr.viewBox]="viewBox"
+            class="mx-auto block max-h-[32rem] w-full"
+            role="img"
+            [attr.aria-label]="
+              pending
+                ? 'Building footprint ' +
+                  widthLabel +
+                  ' by ' +
+                  depthLabel +
+                  ', plot boundary pending survey'
+                : 'Plot boundary with the ' +
+                  widthLabel +
+                  ' by ' +
+                  depthLabel +
+                  ' building footprint'
+            "
+          >
+            @if (outlinePoints) {
+              <polygon
+                [attr.points]="outlinePoints"
+                fill="#e7eedf"
+                stroke="#3a6151"
+                stroke-width="0.12"
+              />
+            }
+            <polygon
+              [attr.points]="footprintPoints"
+              fill="#f2eee6"
+              stroke="#1f2421"
+              stroke-width="0.15"
+            />
+            @if (pending) {
+              <rect
+                [attr.x]="-0.6"
+                [attr.y]="-1.2"
+                [attr.width]="width + 1.2"
+                [attr.height]="depth + 1.8"
+                fill="none"
+                stroke="#a8894f"
+                stroke-width="0.1"
+                stroke-dasharray="0.4 0.3"
+              />
+            }
+
+            <text
+              [attr.x]="width / 2"
+              [attr.y]="streetY + 1.3"
+              text-anchor="middle"
+              font-size="0.75"
+              fill="#4d554f"
+            >
+              {{ widthLabel }}
+            </text>
+            <text
+              [attr.x]="-1"
+              [attr.y]="streetY - depth / 2"
+              text-anchor="middle"
+              font-size="0.75"
+              fill="#4d554f"
+              [attr.transform]="'rotate(-90 -1 ' + (streetY - depth / 2) + ')'"
+            >
+              {{ depthLabel }}
+            </text>
+            <text
+              [attr.x]="width / 2"
+              [attr.y]="streetY + 2.5"
+              text-anchor="middle"
+              font-size="0.7"
+              fill="#5d6660"
+            >
+              Street
+            </text>
+            <text
+              [attr.x]="width / 2"
+              [attr.y]="-1.8"
+              text-anchor="middle"
+              font-size="0.7"
+              fill="#5d6660"
+            >
+              Garden
+            </text>
+            <text
+              [attr.x]="width / 2"
+              [attr.y]="streetY - depth / 2"
+              text-anchor="middle"
+              font-size="0.8"
+              fill="#1f2421"
+            >
+              Building
+            </text>
+          </svg>
+        </div>
+        @if (pending) {
+          <figcaption
+            class="mt-4 rounded-sm border border-dashed border-gold px-4 py-3 text-[0.875rem] text-charcoal-soft"
+            role="note"
+          >
+            {{ plot.pendingNote }}
+          </figcaption>
+        }
+      </figure>
+
+      <div appReveal="70">
+        <dl class="border-t border-charcoal/12">
+          <div class="flex items-baseline justify-between gap-4 border-b border-charcoal/12 py-3">
+            <dt class="text-[0.9375rem]">Address</dt>
+            <dd class="text-right text-[0.9375rem] font-semibold">{{ project.address }}</dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-4 border-b border-charcoal/12 py-3">
+            <dt class="text-[0.9375rem]">Cadastral code</dt>
+            <dd class="text-right text-[0.9375rem] font-semibold tabular-nums">
+              {{ plot.cadastralCode }}
+            </dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-4 border-b border-charcoal/12 py-3">
+            <dt class="text-[0.9375rem]">
+              Registered plot area
+              <span class="block text-[0.8125rem] text-charcoal-mute"
+                >0.038505 ha, per the certificate</span
+              >
+            </dt>
+            <dd class="text-right text-[0.9375rem] font-semibold tabular-nums">
+              {{ plot.registeredAreaM2 }} m²
+            </dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-4 border-b border-charcoal/12 py-3">
+            <dt class="text-[0.9375rem]">Building footprint</dt>
+            <dd class="text-right text-[0.9375rem] font-semibold tabular-nums">
+              {{ widthLabel }} × {{ depthLabel }}
+            </dd>
+          </div>
+        </dl>
+
+        <figure class="mt-8">
+          <img
+            src="/images/site-map.png"
+            alt="Site map with the plot highlighted in green among neighbouring buildings"
+            width="690"
+            height="522"
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full rounded-sm border border-charcoal/10 bg-white"
+          />
+          <figcaption class="mt-2 text-[0.8125rem] text-charcoal-mute">
+            Site map: the plot is highlighted in green.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>

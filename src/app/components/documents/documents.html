@@ -1,0 +1,42 @@
+<section id="documents" class="scroll-mt-20 py-20 md:py-28">
+  <div class="u-container">
+    <div class="max-w-2xl" appReveal>
+      <p class="u-eyebrow">Documents</p>
+      <div class="u-rule mt-4"></div>
+      <h2 class="mt-6 text-3xl font-semibold tracking-[-0.01em] md:text-4xl">Files to download</h2>
+    </div>
+
+    <ul class="mt-12 border-t border-charcoal/12" appReveal>
+      @for (doc of documents; track doc.href) {
+        <li
+          class="flex flex-col gap-3 border-b border-charcoal/12 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8"
+        >
+          <div class="min-w-0">
+            <p class="font-semibold">{{ doc.title }}</p>
+            <p class="mt-0.5 text-[0.875rem] text-charcoal-soft">{{ doc.description }}</p>
+            <p class="mt-1 text-[0.75rem] tracking-[0.08em] text-charcoal-mute uppercase">
+              {{ doc.meta }}
+            </p>
+          </div>
+          <div class="flex shrink-0 gap-3">
+            <a
+              [href]="doc.href"
+              target="_blank"
+              rel="noopener"
+              class="rounded-sm border border-charcoal/20 px-4 py-2 text-[0.875rem] font-medium transition-colors hover:border-charcoal"
+            >
+              Open
+            </a>
+            <a
+              [href]="doc.href"
+              download
+              class="rounded-sm bg-forest px-4 py-2 text-[0.875rem] font-medium text-ivory transition-colors hover:bg-forest-deep"
+            >
+              Download
+            </a>
+          </div>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

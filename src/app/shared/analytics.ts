@@ -61,4 +61,11 @@ export class Analytics {
     window.gtag('js', new Date());
     window.gtag('config', MEASUREMENT_ID, { anonymize_ip: true });
   }
+
+  /** Records which contact channel a visitor reached for. */
+  trackContact(method: 'phone' | 'whatsapp' | 'telegram' | 'email'): void {
+    this.document.defaultView?.gtag?.('event', 'contact_click', {
+      method,
+    });
+  }
 }

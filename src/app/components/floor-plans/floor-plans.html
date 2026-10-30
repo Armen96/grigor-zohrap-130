@@ -1,0 +1,181 @@
+<section id="plans" class="scroll-mt-20 bg-ivory-deep py-20 md:py-28">
+  <div class="u-container">
+    <div class="max-w-2xl" appReveal>
+      <p class="u-eyebrow">Floor plans</p>
+      <div class="u-rule mt-4"></div>
+      <h2 class="mt-6 text-3xl font-semibold tracking-[-0.01em] md:text-4xl">
+        Ground and upper floor
+      </h2>
+      <p class="mt-4 text-[0.95rem] text-charcoal-soft">
+        Tap a sheet to zoom in. The PDFs are the originals, for printing or measuring.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-10 lg:grid-cols-2">
+      @for (sheet of sheets; track sheet.id; let i = $index) {
+        <figure [appReveal]="i * 70">
+          <button
+            type="button"
+            class="group block w-full cursor-zoom-in overflow-hidden rounded-sm border border-charcoal/10 bg-white"
+            [attr.aria-label]="'Zoom into ' + sheet.title"
+            (click)="open(i)"
+          >
+            <img
+              [src]="sheet.preview"
+              [attr.srcset]="sheet.preview + ' 1200w, ' + sheet.image + ' ' + sheet.width + 'w'"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              [alt]="sheet.title"
+              [width]="sheet.width"
+              [height]="sheet.height"
+              loading="lazy"
+              decoding="async"
+              class="h-auto w-full transition-transform duration-700 ease-out group-hover:scale-[1.015]"
+            />
+          </button>
+          <figcaption class="mt-4">
+            <p class="font-semibold">{{ sheet.title }}</p>
+            <p class="mt-1 text-[0.875rem] text-charcoal-mute">{{ sheet.caption }}</p>
+            <div class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-[0.875rem] font-medium">
+              <button
+                type="button"
+                class="text-forest underline-offset-4 hover:underline"
+                (click)="open(i)"
+              >
+                Zoom
+              </button>
+              <a
+                [href]="sheet.pdf"
+                target="_blank"
+                rel="noopener"
+                class="text-forest underline-offset-4 hover:underline"
+              >
+                Open PDF
+              </a>
+              <a [href]="sheet.pdf" download class="text-forest underline-offset-4 hover:underline">
+                Download PDF
+              </a>
+            </div>
+          </figcaption>
+        </figure>
+      }
+    </div>
+  </div>
+</section>
+
+@if (current(); as sheet) {
+  <div
+    #dialog
+    class="fixed inset-0 z-100 flex flex-col bg-charcoal/96 backdrop-blur-sm"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="sheet.title"
+    tabindex="-1"
+  >
+    <div class="flex items-center gap-2 px-3 py-3 text-ivory md:px-6">
+      <p class="min-w-0 flex-1 truncate text-[0.875rem] text-ivory/80">{{ sheet.title }}</p>
+
+      <button
+        type="button"
+        class="flex h-10 w-10 items-center justify-center rounded-full text-ivory/85 hover:bg-ivory/10 disabled:opacity-30"
+        aria-label="Zoom out"
+        [disabled]="!canZoomOut()"
+        (click)="zoomOut()"
+      >
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="min-w-14 rounded-full px-2 py-2 text-[0.8125rem] tabular-nums text-ivory/85 hover:bg-ivory/10"
+        aria-label="Fit to screen"
+        (click)="fit()"
+      >
+        {{ zoom() === 1 ? 'Fit' : zoom() + '×' }}
+      </button>
+      <button
+        type="button"
+        class="flex h-10 w-10 items-center justify-center rounded-full text-ivory/85 hover:bg-ivory/10 disabled:opacity-30"
+        aria-label="Zoom in"
+        [disabled]="!canZoomIn()"
+        (click)="zoomIn()"
+      >
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14M12 5v14" />
+        </svg>
+      </button>
+
+      <a
+        [href]="sheet.pdf"
+        download
+        class="ml-1 hidden rounded-full border border-ivory/30 px-4 py-2 text-[0.8125rem] text-ivory/90 hover:bg-ivory/10 sm:inline-block"
+      >
+        Download PDF
+      </a>
+      <button
+        type="button"
+        class="flex h-10 w-10 items-center justify-center rounded-full text-ivory/85 hover:bg-ivory/10"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div
+      #viewport
+      class="flex min-h-0 flex-1 overflow-auto overscroll-contain p-3 md:p-6"
+      [class.cursor-grab]="zoom() > 1"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp()"
+      (pointercancel)="onPointerUp()"
+      (dblclick)="toggleZoom()"
+    >
+      <!-- Auto margins centre the sheet without clipping it once it overflows. -->
+      <img
+        #image
+        [src]="sheet.image"
+        [alt]="sheet.title"
+        [width]="sheet.width"
+        [height]="sheet.height"
+        draggable="false"
+        class="m-auto block bg-white select-none"
+        [class]="
+          zoom() === 1 ? 'h-auto max-h-full w-auto max-w-full object-contain' : 'h-auto max-w-none'
+        "
+        [style.width]="imageWidth()"
+      />
+    </div>
+
+    <p class="px-4 py-3 text-center text-[0.75rem] text-ivory/50">
+      Use + and − to zoom, then drag to move around the sheet.
+    </p>
+  </div>
+}

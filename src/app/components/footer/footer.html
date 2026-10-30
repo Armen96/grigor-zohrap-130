@@ -1,0 +1,34 @@
+<footer class="border-t border-charcoal/10 bg-ivory pt-12" [class]="footerClass">
+  <div class="u-container">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <p class="text-base font-semibold tracking-[0.18em] text-charcoal">{{ project.name }}</p>
+        <p class="mt-1.5 text-[0.875rem] text-charcoal-mute">{{ project.address }}</p>
+      </div>
+
+      <a
+        href="#model"
+        class="-my-2 inline-flex items-center gap-2 self-start py-2 text-[0.875rem] text-charcoal-soft transition-colors hover:text-charcoal sm:self-auto"
+      >
+        <svg
+          class="h-3.5 w-3.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m5 14 7-7 7 7" />
+        </svg>
+        Top
+      </a>
+    </div>
+
+    <p class="mt-8 border-t border-charcoal/10 pt-6 text-[0.8125rem] text-charcoal-mute">
+      Concept based on {{ project.revision }} ({{ project.revisionDate }}). Not for construction. ©
+      {{ project.year }} {{ project.name }}
+    </p>
+  </div>
+</footer>

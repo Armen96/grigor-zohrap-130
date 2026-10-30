@@ -1,0 +1,42 @@
+<section id="facts" class="scroll-mt-20 py-20 md:py-28">
+  <div class="u-container">
+    <div class="max-w-2xl" appReveal>
+      <p class="u-eyebrow">Key facts · {{ project.revision }}</p>
+      <div class="u-rule mt-4"></div>
+      <h2 class="mt-6 text-3xl font-semibold tracking-[-0.01em] md:text-4xl">
+        {{ project.title }}
+      </h2>
+      <p class="mt-2 text-[0.95rem] text-charcoal-mute">{{ project.address }}</p>
+      <p class="mt-4 text-[0.95rem] text-charcoal-soft">{{ project.summary }}</p>
+    </div>
+
+    <div class="mt-12 grid gap-x-10 gap-y-10 md:grid-cols-2">
+      @for (group of project.factGroups; track group.title; let i = $index) {
+        <div [appReveal]="i * 70">
+          <h3 class="text-xs font-semibold tracking-[0.14em] text-charcoal-mute uppercase">
+            {{ group.title }}
+          </h3>
+          <dl class="mt-3 border-t border-charcoal/12">
+            @for (fact of group.facts; track fact.label) {
+              <div
+                class="flex items-baseline justify-between gap-4 border-b border-charcoal/12 py-3"
+              >
+                <dt class="text-[0.9375rem]">
+                  {{ fact.label }}
+                  @if (fact.detail) {
+                    <span class="block text-[0.8125rem] text-charcoal-mute">{{ fact.detail }}</span>
+                  }
+                </dt>
+                <dd class="shrink-0 text-right text-[0.9375rem] font-semibold tabular-nums">
+                  {{ fact.value }}
+                </dd>
+              </div>
+            }
+          </dl>
+        </div>
+      }
+    </div>
+
+    <p class="mt-8 text-[0.8125rem] text-charcoal-mute">{{ project.areaNote }}</p>
+  </div>
+</section>

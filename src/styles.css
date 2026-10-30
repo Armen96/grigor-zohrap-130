@@ -104,3 +104,29 @@
     scroll-behavior: auto;
   }
 }
+
+/* Entrance animation, driven by IntersectionObserver in RevealDirective. */
+@layer utilities {
+  .u-reveal {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition:
+      opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .u-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .u-reveal,
+  .u-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
