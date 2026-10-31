@@ -2,8 +2,10 @@
  * Plot boundary.
  *
  * The real plot is not rectangular: the right boundary angles inward toward
- * the garden. Survey dimensions are pending, so `outline` is null and the site
- * shows only the rectangular building footprint with a "pending survey" note.
+ * the garden. The width was tape-measured on 31 Oct 2026 (10.80 m at the
+ * street, 10.00 m at the rear building line), which sets the building
+ * footprint. The full boundary still awaits a survey, so `outline` is null and
+ * the site shows the footprint with a "pending survey" note.
  *
  * When the survey arrives, fill in `outline` (and set `survey` to 'surveyed');
  * no component needs to change.
@@ -23,8 +25,15 @@ export interface PlotConfig {
   readonly survey: 'pending' | 'surveyed';
   /** Boundary corners in order, either direction. Null until surveyed. */
   readonly outline: readonly PlotVertex[] | null;
-  /** The building footprint drawn inside the plot (Revision 04). */
-  readonly footprint: { readonly width: number; readonly depth: number };
+  /**
+   * The building footprint (Revision 05): full plot width at the street line,
+   * narrowing on the right to `rearWidth` at the rear wall.
+   */
+  readonly footprint: {
+    readonly frontWidth: number;
+    readonly rearWidth: number;
+    readonly depth: number;
+  };
   /** Registered area from the ownership certificate: 0.038505 ha. */
   readonly registeredAreaM2: number;
   readonly cadastralCode: string;
@@ -34,10 +43,10 @@ export interface PlotConfig {
 export const PLOT: PlotConfig = {
   survey: 'pending',
   outline: null,
-  footprint: { width: 9, depth: 17 },
+  footprint: { frontWidth: 10.8, rearWidth: 10, depth: 17 },
   registeredAreaM2: 385.05,
   cadastralCode: '01-001-0306-0048',
   pendingNote:
-    'Boundary pending survey. The right boundary angles inward toward the garden; until the ' +
-    'survey arrives, only the rectangular 9.00 × 17.00 m building footprint is shown.',
+    'Widths tape-measured on 31 Oct 2026: 10.80 m at the street, 10.00 m at the rear building ' +
+    'line, with the right boundary angling inward. The full plot boundary is pending survey.',
 };

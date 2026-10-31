@@ -17,14 +17,18 @@
               pending
                 ? 'Building footprint ' +
                   widthLabel +
-                  ' by ' +
+                  ' wide at the street, ' +
+                  rearWidthLabel +
+                  ' at the rear, ' +
                   depthLabel +
-                  ', plot boundary pending survey'
-                : 'Plot boundary with the ' +
+                  ' deep; plot boundary pending survey'
+                : 'Plot boundary with the building footprint, ' +
                   widthLabel +
-                  ' by ' +
+                  ' wide at the street, ' +
+                  rearWidthLabel +
+                  ' at the rear, ' +
                   depthLabel +
-                  ' building footprint'
+                  ' deep'
             "
           >
             @if (outlinePoints) {
@@ -42,11 +46,8 @@
               stroke-width="0.15"
             />
             @if (pending) {
-              <rect
-                [attr.x]="-0.6"
-                [attr.y]="-1.2"
-                [attr.width]="width + 1.2"
-                [attr.height]="depth + 1.8"
+              <polygon
+                [attr.points]="pendingFramePoints"
                 fill="none"
                 stroke="#a8894f"
                 stroke-width="0.1"
@@ -62,6 +63,15 @@
               fill="#4d554f"
             >
               {{ widthLabel }}
+            </text>
+            <text
+              [attr.x]="rearWidth / 2"
+              [attr.y]="streetY - depth - 0.5"
+              text-anchor="middle"
+              font-size="0.75"
+              fill="#4d554f"
+            >
+              {{ rearWidthLabel }}
             </text>
             <text
               [attr.x]="-1"
@@ -84,7 +94,7 @@
             </text>
             <text
               [attr.x]="width / 2"
-              [attr.y]="-1.8"
+              [attr.y]="-2.1"
               text-anchor="middle"
               font-size="0.7"
               fill="#5d6660"
@@ -138,7 +148,10 @@
           <div class="flex items-baseline justify-between gap-4 border-b border-charcoal/12 py-3">
             <dt class="text-[0.9375rem]">Building footprint</dt>
             <dd class="text-right text-[0.9375rem] font-semibold tabular-nums">
-              {{ widthLabel }} × {{ depthLabel }}
+              {{ widthLabel }} / {{ rearWidthLabel }} × {{ depthLabel }}
+              <span class="block text-[0.8125rem] font-normal text-charcoal-mute"
+                >street / rear width</span
+              >
             </dd>
           </div>
         </dl>

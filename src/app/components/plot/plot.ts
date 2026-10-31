@@ -24,8 +24,8 @@ export class Plot {
 
   private readonly footprint: readonly PlotVertex[] = [
     { x: 0, z: 0 },
-    { x: PLOT.footprint.width, z: 0 },
-    { x: PLOT.footprint.width, z: PLOT.footprint.depth },
+    { x: PLOT.footprint.frontWidth, z: 0 },
+    { x: PLOT.footprint.rearWidth, z: PLOT.footprint.depth },
     { x: 0, z: PLOT.footprint.depth },
   ];
 
@@ -52,11 +52,20 @@ export class Plot {
   protected readonly footprintPoints = this.toPoints(this.footprint);
   protected readonly outlinePoints = PLOT.outline ? this.toPoints(PLOT.outline) : null;
 
-  protected readonly width = PLOT.footprint.width;
+  protected readonly width = PLOT.footprint.frontWidth;
+  protected readonly rearWidth = PLOT.footprint.rearWidth;
   protected readonly depth = PLOT.footprint.depth;
   /** SVG y of the street line (z = 0). */
   protected readonly streetY = this.bounds.maxZ;
-  protected readonly widthLabel = `${PLOT.footprint.width.toFixed(2)} m`;
+  protected readonly widthLabel = `${PLOT.footprint.frontWidth.toFixed(2)} m`;
+  protected readonly rearWidthLabel = `${PLOT.footprint.rearWidth.toFixed(2)} m`;
+  /** Dashed "pending survey" frame drawn just outside the footprint. */
+  protected readonly pendingFramePoints = this.toPoints([
+    { x: -0.6, z: -0.6 },
+    { x: PLOT.footprint.frontWidth + 0.6, z: -0.6 },
+    { x: PLOT.footprint.rearWidth + 0.6, z: PLOT.footprint.depth + 1.2 },
+    { x: -0.6, z: PLOT.footprint.depth + 1.2 },
+  ]);
   protected readonly depthLabel = `${PLOT.footprint.depth.toFixed(2)} m`;
 
   private toPoints(vertices: readonly PlotVertex[]): string {
