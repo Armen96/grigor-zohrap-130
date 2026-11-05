@@ -154,6 +154,20 @@
               >
             </dd>
           </div>
+          <div class="flex items-baseline justify-between gap-4 border-b border-charcoal/12 py-3">
+            <dt class="text-[0.9375rem]">
+              Site coverage
+              <span class="block text-[0.8125rem] text-charcoal-mute"
+                >limit {{ limitLabel }} = {{ allowedArea.toFixed(1) }} m²</span
+              >
+            </dt>
+            <dd class="text-right text-[0.9375rem] font-semibold tabular-nums">
+              {{ footprintArea.toFixed(1) }} m² · {{ coverageLabel }}
+              <span class="block text-[0.8125rem] font-normal text-charcoal-mute">{{
+                withinLimit ? 'within the limit' : 'over the limit'
+              }}</span>
+            </dd>
+          </div>
         </dl>
 
         <figure class="mt-8">

@@ -33,7 +33,7 @@ export const INTERIOR_VIEWS: readonly ViewOption[] = [
   { id: 'living', label: 'Living' },
   { id: 'kitchen', label: 'Kitchen' },
   { id: 'bedroom', label: 'Bedroom' },
-  { id: 'lobby', label: 'Lobby' },
+  { id: 'lobby', label: 'Corridor + stair door' },
   { id: 'garage', label: 'Garage + stair' },
 ];
 

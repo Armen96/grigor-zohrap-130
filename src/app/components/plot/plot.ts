@@ -68,6 +68,14 @@ export class Plot {
   ]);
   protected readonly depthLabel = `${PLOT.footprint.depth.toFixed(2)} m`;
 
+  /** Trapezoid footprint area against the share of the plot that may be built on. */
+  protected readonly footprintArea =
+    ((PLOT.footprint.frontWidth + PLOT.footprint.rearWidth) / 2) * PLOT.footprint.depth;
+  protected readonly allowedArea = PLOT.registeredAreaM2 * PLOT.coverageLimit;
+  protected readonly coverageLabel = `${((this.footprintArea / PLOT.registeredAreaM2) * 100).toFixed(1)}%`;
+  protected readonly limitLabel = `${Math.round(PLOT.coverageLimit * 100)}%`;
+  protected readonly withinLimit = this.footprintArea <= this.allowedArea;
+
   private toPoints(vertices: readonly PlotVertex[]): string {
     return vertices.map((p) => `${p.x},${this.bounds.maxZ - p.z}`).join(' ');
   }

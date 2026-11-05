@@ -1,10 +1,10 @@
 /**
  * Central project content.
  *
- * Every dimension and area below is copied from the Revision 05 plan sheet
- * (public/docs/revision-05-plans.pdf, 31 Oct 2026), which is the source of
- * truth. Revision 05 redraws Revision 04 on the measured plot width (10.80 m
- * at the street, 10.00 m at the rear wall). Do not add a figure that is not
+ * Every dimension and area below is copied from the Revision 06 plan sheet
+ * (public/docs/revision-06-plans.pdf, 4 Nov 2026), which is the source of
+ * truth. Revision 06 shortens Revision 05 from 17.00 m to 14.70 m deep so the
+ * footprint stays under the 40% site-coverage limit. Do not add a figure that is not
  * on that sheet. Where a value comes
  * from another document, `source` says which.
  */
@@ -66,14 +66,15 @@ export interface ContactConfig {
 
 export const PROJECT = {
   name: 'ZOHRAP 130',
-  title: 'House over warehouse',
-  revision: 'Revision 05',
-  revisionDate: '31 Oct 2026',
+  title: 'House over storage',
+  revision: 'Revision 06',
+  revisionDate: '4 Nov 2026',
   address: 'G. Zohrap St. 130, Ajapnyak, Yerevan',
 
   summary:
-    'A new building replacing the old one on the plot: an L-shaped rental warehouse and a ' +
-    'private garage on the ground floor, the house with an enclosed lobby and terraces above. ' +
+    'A new building replacing the old one on the plot: storage and a ' +
+    'private garage on the ground floor; above it the house, with living and kitchen on the ' +
+    'street terrace and bedrooms toward the garden. ' +
     'Concept only; dimensions in metres.',
 
   factGroups: [
@@ -82,57 +83,72 @@ export const PROJECT = {
       facts: [
         {
           label: 'Footprint',
-          value: '10.80 / 10.00 × 17.00 m',
+          value: '10.80 / 10.00 × 14.70 m',
           detail: 'street / rear width; right side angles in',
         },
-        { label: 'Gross footprint', value: '176.8 m²' },
-        { label: 'Windows', value: 'Front and rear only', detail: 'side walls are blind' },
+        { label: 'Gross footprint', value: '152.9 m²', detail: '39.7% of the plot; limit 40%' },
+        {
+          label: 'Windows',
+          value: 'Front and rear only',
+          detail: 'side walls are blind; roof lights',
+        },
       ],
     },
     {
       title: 'Ground floor',
       facts: [
         {
-          label: 'Rental warehouse',
-          value: '≈ 100 m²',
-          detail: 'clear, L-shaped; front wing 4.15 m wide',
+          label: 'Storage',
+          value: '≈ 91 m²',
+          detail: 'clear; front wing 4.47 m wide, rear storage 5.45 m deep',
         },
-        { label: 'WC', value: '2.00 × 2.00 m' },
-        { label: 'Private garage', value: '5.55–5.90 × 6.80 m', detail: 'clear, front right' },
         {
-          label: 'U-stair',
-          value: '5.45–5.55 × 2.60 m',
-          detail: 'behind the garage, ≈ 1.10 m flight',
+          label: 'WC',
+          value: '1.35 × 1.55 m',
+          detail: 'rear-left corner of the garage; door from the rear storage',
+        },
+        {
+          label: 'Private garage',
+          value: '5.10 × 8.50 m',
+          detail:
+            'clear, widening to 5.56 m at the street; two cars side by side (2 × 2.20 × 4.70); 4.80 m door with a pass door; free space behind',
+        },
+        {
+          label: 'L-stair',
+          value: 'open to the garage',
+          detail: 'inside the garage, up the right wall, turns left at a landing',
         },
       ],
     },
     {
       title: 'Upper floor',
       facts: [
-        { label: 'House block', value: '109.7 m²', detail: 'gross' },
+        { label: 'Enclosed house', value: '131.4 m²', detail: 'gross' },
         {
-          label: 'Enclosed stair / lobby',
-          value: '26.5 m²',
-          detail: '≈ 6.15 × 4.30 m gross, above garage',
+          label: 'Front terrace',
+          value: '21.5 m²',
+          detail: 'gross; 10.80 → 10.69 × 2.00 m',
         },
-        { label: 'Enclosed total', value: '136.2 m²' },
-        {
-          label: 'Open terrace',
-          value: '40.6 m²',
-          detail: 'gross; front 10.80 × 2.00 m + side 4.45 × 4.30 m',
-        },
-        { label: 'Upper floor total', value: '176.8 m²', detail: '136.2 + 40.6, gross' },
+        { label: 'Upper floor total', value: '152.9 m²', detail: '131.4 + 21.5, gross' },
       ],
     },
     {
       title: 'Rooms',
       facts: [
-        { label: 'Bedrooms (2)', value: '≈ 14.4 m² each', detail: '3.90 × 3.70 m clear' },
-        { label: 'Living', value: '4.00 m', detail: 'clear width' },
-        { label: 'Bath', value: '3.70 × 1.50 m' },
-        { label: 'Laundry', value: '≈ 1.65 × 1.50 m' },
-        { label: 'Hall', value: '1.20 m', detail: 'clear' },
-        { label: 'Passage to garden', value: '1.30–1.50 m', detail: 'clear' },
+        {
+          label: 'Living + kitchen / dining',
+          value: '≈ 41 m²',
+          detail: 'across the front; living 4.30 m deep',
+        },
+        { label: 'Bedrooms (2)', value: '≈ 15.0 m² each', detail: '4.05 × 3.70 m clear' },
+        {
+          label: 'Bath',
+          value: '2.70 × 3.80 m',
+          detail: 'tub, shower, washing machine; roof light',
+        },
+        { label: 'Corridor', value: '2.35 m', detail: 'clear width; the stair door opens onto it' },
+        { label: 'Hall', value: '1.35 m', detail: 'clear' },
+        { label: 'Passage to garden', value: '1.00–1.20 m', detail: 'clear' },
       ],
     },
   ] as readonly FactGroup[],
@@ -150,77 +166,78 @@ export const PROJECT = {
     {
       title: 'Skylights',
       body:
-        'Kitchen, bath and hall get daylight from roof skylights, since side windows are not ' +
+        'Stair, bath, hall and dining area get roof lights, since side windows are not ' +
         'possible.',
       source: 'Illustrated floor plans and 3D model',
     },
     {
-      title: 'Home route through the garage only',
+      title: 'Home route through the garage, behind a stair door',
       body:
-        'Garage → enclosed stair → roofed lobby → living room. There is no access to the house ' +
-        'through the rental area. The living room has a separate door to the open terrace.',
+        'Garage (pass door in the garage door) → L-stair (inside the garage, turns left) → stair ' +
+        'door → corridor → living and kitchen at the front; bedrooms through the hall. No ' +
+        'access to the house through the storage.',
     },
     {
       title: 'Provisional garden stair',
       body:
-        'The rear garden exit is reserved only. It is not usable until levels, an external ' +
+        'A 1.00–1.20 m passage beside the bedrooms leads to the garden door. The external stair ' +
+        'down to the garden is reserved only. It is not usable until levels, an external ' +
         'landing or stair, and boundary clearances are verified.',
     },
   ] as readonly DesignNote[],
 
   /** Rev 05 "Design basis / read before using this sketch", verbatim in substance. */
   toVerify: [
-    'The new enclosure is conceptual: verify roof, structural support, headroom, ventilation and fire separation from the garage and rental storage.',
-    'Stair: final rise and headroom need coordinated design.',
-    'Width update: the plot was measured on 31 Oct 2026 at 10.80 m on the street side and 10.00 m where the building ends. Revision 04 assumed 9.00 m.',
-    'Width check at the rear: 0.30 + 3.90 + 0.15 + 3.90 + 0.15 + 1.30 + 0.30 = 10.00 m. At the street: 0.30 + 4.15 + 0.15 + 5.90 + 0.30 = 10.80 m.',
-    'The extra width is shared out as a proposal (wider living, bedrooms, garage, lobby); room splits are for the architect to confirm.',
+    'Coverage: only 40% of the land may be built on. 40% of 385.05 m² (ownership certificate) = 154.0 m². At 14.70 m deep the footprint is 152.9 m² (39.7%); Revision 05 at 17.00 m was 176.8 m² (45.9%).',
+    'Confirm with the municipality which area counts (ground footprint, or also the 2.00 m terrace over the garage) and whether a surveyed area replaces 385.05 m².',
+    'Width check at the rear wall: 0.30 + 4.05 + 0.15 + 4.05 + 0.15 + 1.00 + 0.30 = 10.00 m. At the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
+    'The new enclosure is conceptual: verify roof, structural support, headroom, ventilation and fire separation from the garage and storage.',
     'Tape measurement only: which boundary angles, boundary clearances and planning approval must be confirmed against the cadastral survey.',
   ] as readonly string[],
 
   planSheets: [
     {
-      id: 'revision-05',
-      title: 'Revision 05 plan sheet',
+      id: 'revision-06',
+      title: 'Revision 06 plan sheet',
       caption: 'Source of truth for every dimension and area. Front at bottom, garden at top.',
-      image: '/images/plans/revision-05.webp',
-      preview: '/images/plans/revision-05-1200.webp',
+      image: '/images/plans/revision-06.webp',
+      preview: '/images/plans/revision-06-1200.webp',
       width: 2400,
       height: 1920,
-      pdf: '/docs/revision-05-plans.pdf',
+      pdf: '/docs/revision-06-plans.pdf',
     },
     {
       id: 'illustrated',
       title: 'Illustrated floor plans',
       caption:
-        'Top-down render of the Revision 05 model on the real plot width, with an area schedule. Furniture and finishes are illustrative.',
+        'Top-down render of the Revision 06 model, 14.70 m deep for the 40% limit, with an area schedule. Furniture and finishes are illustrative.',
       image: '/images/plans/floor-plans-illustrated.webp',
       preview: '/images/plans/floor-plans-illustrated-1200.webp',
       width: 3000,
-      height: 2063,
+      height: 1890,
       pdf: '/docs/floor-plans-illustrated.pdf',
     },
   ] as readonly PlanSheet[],
 
   documents: [
     {
-      title: 'Revision 05 plan sheet',
+      title: 'Revision 06 plan sheet',
       description:
-        'Ground and upper floor on the measured plot width, area check and design basis. 31 Oct 2026.',
-      href: '/docs/revision-05-plans.pdf',
-      meta: 'PDF · 175 KB',
+        'Both floors at 14.70 m deep for the 40% coverage limit, area check and design basis. 4 Nov 2026.',
+      href: '/docs/revision-06-plans.pdf',
+      meta: 'PDF · 183 KB',
     },
     {
       title: 'Illustrated floor plans',
       description: 'Furnished plan render with area schedule and design notes.',
       href: '/docs/floor-plans-illustrated.pdf',
-      meta: 'PDF · 2.6 MB',
+      meta: 'PDF · 2.1 MB',
     },
     {
       title: '3D concept model',
       description: 'The model above as a single standalone page. Needs an internet connection.',
       href: '/docs/house-over-warehouse-3d.html',
-      meta: 'HTML · 51 KB',
+      meta: 'HTML · 56 KB',
     },
     {
       title: 'Ownership certificate',
@@ -245,9 +262,9 @@ export const PROJECT = {
   } as ContactConfig,
 
   whatsappMessage:
-    'Hello, I am reviewing the House over warehouse concept (Revision 05) for G. Zohrap 130.',
+    'Hello, I am reviewing the House over storage concept (Revision 06) for G. Zohrap 130.',
 
-  emailSubject: 'House over warehouse, Revision 05',
+  emailSubject: 'House over storage, Revision 06',
 
   year: 2026,
 } as const;

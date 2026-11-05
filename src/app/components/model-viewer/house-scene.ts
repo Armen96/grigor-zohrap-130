@@ -1,5 +1,5 @@
 /**
- * The "House over warehouse" concept model, ported from the reference
+ * The "House over storage" concept model, ported from the reference
  * three.js r128 page (house-warehouse-3d.html, built from Revision 04).
  *
  * Geometry, materials, lights and camera presets are kept as in the reference
@@ -29,7 +29,7 @@ type Opening = readonly [number, number, number, number];
 
 /**
  * Plan coords: x from the left boundary (0) to the right one (10.8 at the street,
- * 10.0 at the rear wall), z 0 street → 17 garden, y up.
+ * 10.0 at the rear wall), z 0 street → 14.7 rear wall → garden, y up.
  */
 const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, -z);
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -573,12 +573,13 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
 
   /* ---------- plot boundary ---------- */
   // The left boundary is straight (x = 0). The right boundary angles inward:
-  // 10.80 m wide at the street line, 10.00 m where the building ends (z = 17).
+  // 10.80 m at the street line, 10.00 m at the rear wall.
   const W_FRONT = 10.8;
   const W_REAR = 10.0;
-  const DEPTH = 17;
+  /** Revision 06: 14.70 m deep keeps the footprint under 40% of the 385.05 m² plot. */
+  const D = 14.7;
   /** Outer face of the right party wall at depth z. */
-  const XR = (z: number) => W_FRONT - ((W_FRONT - W_REAR) * z) / DEPTH;
+  const XR = (z: number) => W_FRONT - ((W_FRONT - W_REAR) * z) / D;
   /** Plan strip from x0 to the right boundary (less `inset`), between z0 and z1. */
   const toRight = (x0: number, z0: number, z1: number, inset: number): Point[] => [
     [x0, z0],
@@ -622,12 +623,42 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
       grp,
     );
   }
-  const BLD: Point[] = [
-    [0, 0],
-    [W_FRONT, 0],
-    [W_REAR, DEPTH],
-    [0, DEPTH],
-  ];
+  const BLD: Point[] = toRight(0, 0, D, 0);
+
+  /* Key lines along the depth (z), shared by both floors. */
+  const Z_GARAGE = 6.3; // upstairs: kitchen back wall
+  const Z_STAIR0 = Z_GARAGE + 0.15; // upstairs: middle zone starts
+  const Z_STAIR1 = Z_STAIR0 + 2.6; // upstairs: middle zone | hall
+  const Z_HALL = Z_STAIR1 + 0.15; // upper hall starts
+  const Z_GAR2 = 11.2; // ground: storage pallets run to here
+  const X_GW = 4.77; // ground: storage | garage wall (garage 5.10 m clear at its rear wall)
+  // L-stair, open to the garage: flight 1 along the right wall rising toward the garden,
+  // a corner landing, then flight 2 turning left and arriving upstairs at XS.
+  const TR = 0.27; // stair going
+  const R = H1 / 18; // stair rise
+  const XL = 8.8; // flight 1 and the corner landing run from here to the right wall
+  const XS = XL - 8 * TR; // top of flight 2 (upstairs arrival)
+  const F2 = [Z_STAIR1 - 1.5, Z_STAIR1 - 0.4] as const; // flight 2 and the corner landing, in z
+  const Z_F1 = F2[0] - 8 * TR; // first riser of flight 1
+  // Garage 5.10–5.56 × 8.50 m clear from the street to Z_SH: two cars side by side at the
+  // front, free space behind them (wide enough to drive in between the WC and the stair), the
+  // L-stair along the right wall and the storage WC in the rear-left corner.
+  const X_WC = X_GW + 0.15; // storage WC 1.35 × 1.55, door from the rear storage
+  const Z_SH = 0.3 + 8.5; // garage | rear storage wall
+  const Z_WC1 = Z_SH;
+  const Z_WC0 = Z_WC1 - 1.55;
+  const Z_BED = 10.55; // hall | bedrooms wall
+  const Z_REAR = D - 0.3; // inner face of the rear wall
+  const Z_TER = 2.0; // front terrace depth
+  const Z_HOUSE = Z_TER + 0.3; // inner face of the upper front wall
+  const Z_FRONT = Z_GARAGE; // living + kitchen | bath, corridor and stair
+  const X_BATH = 3.0; // bath | corridor wall: bath 2.70 m wide
+  const X_COR0 = X_BATH + 0.15; // corridor starts here
+  const Z_LIV = 6.6; // living | bath wall, 0.30 m behind the kitchen wall (bath 3.80 m deep)
+  const Z_B0 = Z_LIV + 0.15; // bath starts
+  const X_COR1 = 5.5; // corridor | stair wall, with the stair door
+  const X_B2 = 4.5; // bedroom 1 | bedroom 2 wall ends here
+  const X_PASS = 8.7; // bedroom 2 | garden passage wall ends here
 
   /* ================= SITE ================= */
   box(-14, 25, -0.32, -0.12, -12, -2.6, M.asphalt, G.site, { cast: false });
@@ -637,8 +668,8 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   for (let x = -12; x < 24; x += 4)
     box(x, x + 2, -0.119, -0.115, -7.4, -7.25, M.white, G.site, { cast: false });
   // garden: the plot keeps narrowing past the building
-  slab(toRight(0, 17, 27, 0), [], -0.02, 0.13, M.grass, G.site).castShadow = false;
-  slab(toRight(0, 17, 18.3, 0), [], 0.0, 0.15, M.paving, G.site).castShadow = false;
+  slab(toRight(0, D, 27, 0), [], -0.02, 0.13, M.grass, G.site).castShadow = false;
+  slab(toRight(0, D, D + 1.3, 0), [], 0.0, 0.15, M.paving, G.site).castShadow = false;
   box(-14, 0, -0.15, -0.03, 17.5, 27, M.grass, G.site, { cast: false });
   slab(
     [
@@ -654,8 +685,8 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
     G.site,
   ).castShadow = false;
   // fences
-  box(-0.05, 0.0, 0, 1.8, 17, 27, M.fence, G.site);
-  rightWall(17, 27, 0, 1.8, 0.05, M.fence, G.site);
+  box(-0.05, 0.0, 0, 1.8, D, 27, M.fence, G.site);
+  rightWall(D, 27, 0, 1.8, 0.05, M.fence, G.site);
   box(0, XR(27), 0, 1.8, 26.95, 27, M.fence, G.site);
   function tree(x: number, z: number, s: number) {
     cyl(x, 0, 1.6 * s, z, 0.12 * s, M.trunk, G.site, 8);
@@ -670,8 +701,8 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
       foliage(r * s, i % 2 ? M.leafDark : M.leaf, x + dx * s, dy * s, z + dz * s, G.site),
     );
   }
-  tree(2.4, 23.5, 1.2);
-  tree(7.6, 25, 0.9);
+  tree(2.4, 22.5, 1.2);
+  tree(7.6, 24.5, 0.9);
   // street trees
   tree(-3, -1.6, 0.9);
   tree(14.5, -1.6, 1);
@@ -717,9 +748,9 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   const g = G.ground;
   slab(BLD, [], 0, 0.12, M.concrete, g).castShadow = false;
   // outer side walls (blind); the right one follows the angled boundary
-  box(0, 0.3, 0, W1, 0, 17, M.plasterBase, g);
-  rightWall(0, 17, 0, W1, 0.3, M.plasterBase, g);
-  // front wall: warehouse gate, garage door, home entry door
+  box(0, 0.3, 0, W1, 0, D, M.plasterBase, g);
+  rightWall(0, D, 0, W1, 0.3, M.plasterBase, g);
+  // front wall: storage gate, garage door, home entry door
   wallX(
     0,
     W_FRONT,
@@ -728,22 +759,20 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
     0,
     W1,
     [
-      [0.7, 4.0, 0, 3.0],
-      [4.85, 8.35, 0, 2.5],
-      [8.75, 9.75, 0, 2.25],
+      [0.6, 4.4, 0, 3.0],
+      [4.95, 9.75, 0, 2.5],
     ],
     M.plasterBase,
     g,
   );
-  // wood cladding panel framing the home entry side
-  box(8.5, 10.6, 0, W1, -0.04, 0.0, M.clad, g);
-  box(8.75, 9.75, 0, 2.25, -0.05, 0.01, M.alu, g); // clear entry recess frame
+  // wood cladding band above the double garage door
+  box(4.75, 10.6, 2.72, W1, -0.04, 0.0, M.clad, g);
   // rear wall
   wallX(
     0,
-    W_REAR,
-    16.7,
-    17,
+    XR(D),
+    Z_REAR,
+    D,
     0,
     W1,
     [
@@ -754,61 +783,84 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
     M.plasterBase,
     g,
   );
-  glazeX(0.9, 3.3, 16.85, 2.0, 3.0, g, 2, 0.15);
-  glazeX(4.6, 6.4, 16.85, 2.0, 3.0, g, 1, 0.15);
-  glazeX(8.4, 9.2, 16.85, 2.3, 2.9, g, 1, 0.15);
-  // warehouse | garage partition (fire-rated)
-  box(4.45, 4.6, 0, W1, 0.3, 10.0, M.wallIn, g);
-  // garage rear wall with door to stair
-  wallX(4.6, XR(7.1) - 0.15, 7.1, 7.25, 0, W1, [[4.75, 5.65, 0, 2.1]], M.wallIn, g);
-  // stair rear wall (separates from rental area)
-  box(4.45, XR(9.85) - 0.15, 0, W1, 9.85, 10.0, M.wallIn, g);
-  // WC
-  box(7.6, 7.75, 0, W1, 14.55, 16.7, M.wallIn, g);
-  wallX(7.75, XR(14.55) - 0.15, 14.55, 14.7, 0, W1, [[8.15, 8.95, 0, 2.1]], M.wallIn, g);
-
+  const zg = Z_REAR + 0.15;
+  glazeX(0.9, 3.3, zg, 2.0, 3.0, g, 2, 0.15);
+  glazeX(4.6, 6.4, zg, 2.0, 3.0, g, 1, 0.15);
+  glazeX(8.4, 9.2, zg, 2.3, 2.9, g, 1, 0.15);
+  // storage | garage walls (fire-rated): a plain rectangle. The rear one has the WC door,
+  // opening from the rear storage.
+  box(X_GW, X_GW + 0.15, 0, W1, 0.3, Z_SH + 0.15, M.wallIn, g);
+  wallX(
+    X_GW,
+    XR(Z_SH) - 0.15,
+    Z_SH,
+    Z_SH + 0.15,
+    0,
+    W1,
+    [[X_WC + 0.05, X_WC + 0.8, 0, 2.05]],
+    M.wallIn,
+    g,
+  );
+  // closes the strip between flight 2 and the rear wall above the WC
+  for (let j = 1; j <= 8; j++) {
+    const xa = XL - j * TR;
+    const xb = XL - (j - 1) * TR;
+    box(xa, xb, (9 + j) * R - 0.45, W1, F2[1], F2[1] + 0.05, M.wallIn, g);
+  }
   // gates and doors (front)
-  box(0.7, 4.0, 0, 3.0, 0.05, 0.1, M.roller, g); // roller gate
-  box(0.6, 4.1, 3.0, 3.18, -0.02, 0.1, M.alu, g); // gate box
-  box(4.85, 8.35, 0, 2.5, 0.06, 0.1, M.cladH, g); // timber sectional garage door
+  box(0.6, 4.4, 0, 3.0, 0.05, 0.1, M.roller, g); // roller gate (storage)
+  box(0.5, 4.5, 3.0, 3.18, -0.02, 0.1, M.alu, g); // gate box
+  box(4.95, 9.75, 0, 2.5, 0.06, 0.1, M.cladH, g); // timber sectional double garage door
   for (let i = 1; i < 4; i++)
-    box(4.85, 8.35, i * 0.625 - 0.01, i * 0.625 + 0.01, 0.04, 0.06, M.alu, g);
-  box(8.75, 9.75, 0, 2.25, 0.12, 0.16, M.walnut, g); // home entry door (set back)
-  box(9.58, 9.62, 0.9, 1.35, 0.1, 0.12, M.chrome, g);
-  // small canopy over garage + entry
-  box(4.7, 10.6, 2.62, 2.72, -0.65, 0.0, M.alu, g);
-  // wall lights + house number
+    box(4.95, 9.75, i * 0.625 - 0.01, i * 0.625 + 0.01, 0.04, 0.06, M.alu, g);
+  box(8.75, 9.6, 0.02, 2.05, 0.03, 0.06, M.walnut, g); // pass door built into the garage door
+  box(8.83, 8.87, 0.95, 1.3, 0.0, 0.03, M.chrome, g);
+  box(4.75, 10.6, 2.62, 2.72, -0.65, 0.0, M.alu, g); // small canopy over garage + entry
   (
     [
-      [4.3, 2.6],
-      [10.2, 2.4],
+      [4.6, 2.6],
+      [10.55, 2.4],
     ] as const
   ).forEach(([x, y]) =>
     box(x - 0.06, x + 0.06, y, y + 0.2, -0.06, 0, M.lampOn, g, { cast: false }),
   );
-  box(8.8, 9.1, 2.4, 2.55, -0.05, -0.04, M.black, g);
-
-  // U-stair behind the garage, 18 risers to +3.5; the mid landing runs to the angled wall
-  const R = H1 / 18;
-  const TR = 0.27;
-  const XL = 8.8; // start of mid landing
-  const XS = XL - 8 * TR; // foot of the first flight
-  const XE = XR(9.85) - 0.15; // landing end, buried in the side wall
+  box(10.4, 10.7, 2.0, 2.15, -0.05, -0.04, M.black, g); // house number
+  // L-stair, open to the garage (no enclosure on the ground floor)
   for (let i = 1; i <= 8; i++) {
-    box(XS + (i - 1) * TR, XS + i * TR, 0, i * R, 7.25, 8.35, M.concrete, g);
-    box(XS + (i - 1) * TR, XS + i * TR + 0.02, i * R, i * R + 0.03, 7.25, 8.35, M.oakFurn, g);
+    const z0 = Z_F1 + (i - 1) * TR;
+    const z1 = z0 + TR;
+    box(XL, XR(z1) - 0.3, 0, i * R, z0, z1, M.concrete, g);
+    box(XL - 0.02, XR(z1) - 0.3, i * R, i * R + 0.03, z0 - 0.02, z1, M.oakFurn, g);
   }
-  box(XL, XE, 0, 9 * R, 7.25, 9.85, M.concrete, g);
-  box(XL, XE, 9 * R, 9 * R + 0.03, 7.25, 9.85, M.oakFurn, g);
+  box(XL, XR(F2[1]) - 0.3, 0, 9 * R, F2[0], F2[1], M.concrete, g); // corner landing
+  box(XL, XR(F2[1]) - 0.3, 9 * R, 9 * R + 0.03, F2[0], F2[1], M.oakFurn, g);
   for (let j = 1; j <= 8; j++) {
     const xa = XL - j * TR;
     const xb = XL - (j - 1) * TR;
     const top = 9 * R + j * R;
-    box(xa, xb, top - 0.45, top, 8.75, 9.85, M.concrete, g);
-    box(xa - 0.02, xb, top, top + 0.03, 8.75, 9.85, M.oakFurn, g);
+    box(xa, xb, top - 0.45, top, F2[0], F2[1], M.concrete, g);
+    box(xa - 0.02, xb, top, top + 0.03, F2[0], F2[1], M.oakFurn, g);
   }
-  box(XS, XL, 0, H1 + 0.95, 8.4, 8.7, M.wallIn, g); // central stair wall (acts as guard upstairs)
-  box(XS, XL, H1 + 0.95, H1 + 1.0, 8.37, 8.73, M.oakFurn, g); // handrail cap
+  // handrails on the open sides
+  {
+    const rail = (x0: number, y0: number, z0: number, x1: number, y1: number, z1: number) => {
+      const a = V(x0, y0, z0);
+      const b = V(x1, y1, z1);
+      const m = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.025, 0.025, a.distanceTo(b), 8),
+        M.steel,
+      );
+      m.position.copy(a).add(b).multiplyScalar(0.5);
+      m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+      g.add(m);
+      [a, b].forEach((p) => cyl(p.x, p.y - 0.9, p.y, -p.z, 0.02, M.steel, g, 6));
+    };
+    rail(XL - 0.05, 0.9, Z_F1, XL - 0.05, 9 * R + 0.9, F2[0]);
+    rail(XL, 9 * R + 0.9, F2[0] - 0.05, XS, H1 + 0.9, F2[0] - 0.05);
+  }
+  // storage WC 1.35 × 1.55 in the garage's rear-left corner, door in the rear wall
+  box(X_WC, X_WC + 1.5, 0, W1, Z_WC0 - 0.15, Z_WC0, M.wallIn, g);
+  box(X_WC + 1.35, X_WC + 1.5, 0, W1, Z_WC0, Z_WC1, M.wallIn, g);
 
   /* ground furniture: car, racks, WC */
   const gf = G.groundFurn;
@@ -833,8 +885,8 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
     box(x0 + 0.15, x0 + 0.45, 0.62, 0.78, z0 - 0.02, z0, M.lampOn, gf);
     box(x1 - 0.45, x1 - 0.15, 0.62, 0.78, z0 - 0.02, z0, M.lampOn, gf);
   }
-  car(5.2, 7.0, 0.8, 5.3);
-  box(9.65, 10.1, 0, 1.9, 1.5, 4.5, M.walnut, gf); // garage storage cabinet
+  car(5.3, 7.1, 0.45, 4.95); // two cars side by side, 2.20 × 4.70 m each
+  car(7.9, 9.7, 0.45, 4.95);
   function rackRun(x0: number, x1: number, z0: number, z1: number, levels: number, h: number) {
     const step = (x1 - x0) / Math.round((x1 - x0) / 2.7);
     for (let x = x0; x <= x1 + 0.01; x += step) {
@@ -862,55 +914,52 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
       }
     }
   }
-  rackRun(0.45, 7.35, 15.6, 16.6, 3, 2.9); // along rear wall
+  rackRun(0.45, 7.35, Z_REAR - 1.1, Z_REAR - 0.1, 3, 2.9); // along rear wall
   for (let z = 1.0; z < 9.0; z += 1.35) {
     box(0.45, 1.55, 0, 0.15, z, z + 1.2, M.pallet, gf);
     box(0.5, 1.5, 0.15, 0.15 + rnd(0.5, 1.1), z + 0.05, z + 1.15, M.carton, gf);
   }
-  for (let z = 11; z < 14; z += 1.35) {
+  for (let z = 1.0; z < 9.0; z += 1.35) {
+    box(X_GW - 1.25, X_GW - 0.15, 0, 0.15, z, z + 1.2, M.pallet, gf);
+    box(X_GW - 1.2, X_GW - 0.2, 0.15, 0.15 + rnd(0.5, 1.1), z + 0.05, z + 1.15, M.carton, gf);
+  }
+  for (let z = 8.9; z < Z_GAR2 - 1.0; z += 1.35) {
     box(2.2, 3.3, 0, 0.15, z, z + 1.2, M.pallet, gf);
     box(2.25, 3.25, 0.15, 0.15 + rnd(0.4, 1), z + 0.05, z + 1.15, M.carton, gf);
   }
-  box(9.0, 9.5, 0, 0.42, 15.9, 16.6, M.white, gf); // WC
-  box(9.05, 9.45, 0.42, 0.8, 16.45, 16.65, M.white, gf);
-  box(7.9, 8.35, 0.8, 0.95, 16.3, 16.65, M.white, gf); // basin
+  box(X_WC + 0.7, X_WC + 1.35, 0, 0.42, Z_WC0 + 0.05, Z_WC0 + 0.5, M.white, gf); // WC
+  box(X_WC + 1.2, X_WC + 1.35, 0.42, 0.8, Z_WC0 + 0.05, Z_WC0 + 0.5, M.white, gf);
+  box(X_WC, X_WC + 0.4, 0.8, 0.95, Z_WC0 + 0.4, Z_WC0 + 0.8, M.white, gf); // basin
 
   /* ================= UPPER SLAB + TERRACE ================= */
+  // the upstairs floor covers the corner beside flight 1; only the flights are open
   const stairHole: Point[] = [
-    [XS, 7.25],
-    [XR(7.25) - 0.3, 7.25],
-    [XR(9.85) - 0.3, 9.85],
-    [XS, 9.85],
+    [XS, F2[0]],
+    [XL, F2[0]],
+    [XL, Z_STAIR0],
+    [XR(Z_STAIR0) - 0.3, Z_STAIR0],
+    [XR(F2[1]) - 0.3, F2[1]],
+    [XS, F2[1]],
   ];
   slab(BLD, [stairHole], H1, SLAB, M.slab, G.slab);
   box(0, W_FRONT, W1 - 0.02, W1, 0, 0.02, M.coping, G.slab); // drip line
-  // terrace decking: front strip across the full width + side terrace
-  slab(toRight(0.25, 0.2, 2.0, 0.25), [], H1 + 0.03, 0.03, M.deck, G.terrace).castShadow = false;
-  box(0.25, 4.45, H1, H1 + 0.03, 2.0, 6.3, M.deck, G.terrace, { cast: false });
+  // front terrace decking across the full width
+  slab(toRight(0.25, 0.2, Z_TER, 0.25), [], H1 + 0.03, 0.03, M.deck, G.terrace).castShadow = false;
   // front upstand + frameless glass railing
   box(0.25, 10.55, H1, H1 + 0.25, 0, 0.2, M.plaster, G.terrace);
   box(0.25, 10.55, H1 + 0.25, H1 + 0.27, 0, 0.2, M.coping, G.terrace);
   box(0.27, 10.53, H1 + 0.27, H1 + 1.1, 0.08, 0.1, M.glassRail, G.terrace, { cast: false });
   box(0.25, 10.55, H1 + 1.08, H1 + 1.12, 0.06, 0.12, M.alu, G.terrace);
   // privacy walls on boundaries (no openings to neighbours)
-  box(0, 0.25, H1, H1 + 1.8, 0, 6.3, M.plaster, G.terrace);
-  box(0, 0.25, H1 + 1.8, H1 + 1.84, 0, 6.3, M.coping, G.terrace);
-  rightWall(0, 2.0, H1, H1 + 1.8, 0.25, M.plaster, G.terrace);
-  rightWall(0, 2.0, H1 + 1.8, H1 + 1.84, 0.25, M.coping, G.terrace);
+  box(0, 0.25, H1, H1 + 1.8, 0, Z_TER, M.plaster, G.terrace);
+  box(0, 0.25, H1 + 1.8, H1 + 1.84, 0, Z_TER, M.coping, G.terrace);
+  rightWall(0, Z_TER, H1, H1 + 1.8, 0.25, M.plaster, G.terrace);
+  rightWall(0, Z_TER, H1 + 1.8, H1 + 1.84, 0.25, M.coping, G.terrace);
   // terrace furniture
   {
     const t = G.terrace;
     const tf = H1 + 0.03;
-    // lounge set on side terrace
-    box(0.4, 2.6, tf, tf + 0.38, 3.0, 3.75, M.oakFurn, t);
-    box(0.4, 2.6, tf + 0.38, tf + 0.5, 3.0, 3.75, M.linen, t);
-    box(0.4, 2.6, tf + 0.38, tf + 0.8, 3.55, 3.75, M.linen, t);
-    box(0.4, 1.15, tf, tf + 0.5, 3.75, 5.3, M.oakFurn, t);
-    box(0.4, 1.15, tf + 0.38, tf + 0.5, 3.75, 5.3, M.linen, t);
-    box(0.4, 0.6, tf + 0.38, tf + 0.8, 3.75, 5.3, M.linen, t);
-    box(1.6, 2.6, tf, tf + 0.35, 4.2, 5.0, M.oakFurn, t);
-    cyl(2.1, tf + 0.35, tf + 0.55, 4.6, 0.08, M.clay, t, 12);
-    // dining on front terrace
+    // dining in front of the living room
     box(1.0, 2.6, tf + 0.72, tf + 0.76, 0.55, 1.45, M.oakFurn, t);
     box(1.05, 1.12, tf, tf + 0.72, 0.6, 1.4, M.oakFurn, t);
     box(2.48, 2.55, tf, tf + 0.72, 0.6, 1.4, M.oakFurn, t);
@@ -925,246 +974,252 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
       box(x - 0.22, x + 0.22, tf + 0.42, tf + 0.46, z - 0.2, z + 0.2, M.alu, t);
       box(x - 0.22, x + 0.22, tf, tf + 0.42, z - 0.02, z + 0.02, M.alu, t);
     });
+    // two lounge chairs and a side table in front of the kitchen
+    [7.0, 8.6].forEach((x) => {
+      box(x, x + 0.75, tf, tf + 0.32, 0.45, 1.5, M.oakFurn, t);
+      box(x + 0.03, x + 0.72, tf + 0.32, tf + 0.42, 0.5, 1.45, M.linen, t);
+      box(x + 0.03, x + 0.72, tf + 0.32, tf + 0.75, 1.3, 1.45, M.linen, t);
+    });
+    cyl(8.2, tf, tf + 0.45, 0.95, 0.2, M.oakFurn, t, 16);
     // planters
     (
       [
         [3.3, 0.6],
-        [5.0, 0.6],
+        [5.6, 0.6],
         [10.1, 0.6],
-        [4.0, 5.8],
       ] as const
     ).forEach(([x, z]) => {
       box(x - 0.3, x + 0.3, tf, tf + 0.5, z - 0.3, z + 0.3, M.coping, t);
       foliage(0.42, M.leaf, x, tf + 0.85, z, t);
     });
-    box(6.4, 9.9, tf, tf + 0.45, 1.2, 1.9, M.coping, t);
-    for (let x = 6.7; x < 9.8; x += 0.55) foliage(0.32, M.leafDark, x, tf + 0.72, 1.55, t);
   }
 
   /* ================= UPPER FLOOR ================= */
+  // Street side: living + kitchen across the full width, onto the terrace.
+  // Middle: bath against the bedroom wall, a corridor, and the stair behind its own door.
+  // Garden side: hall, two bedrooms and a 1 m passage to the garden door.
   const u = G.upper;
   const fl = H1;
+  const ZB = Z_BED + 0.15; // bedrooms start
+  const ZM = Z_STAIR1; // middle block | hall wall
   // interior floors
-  slab(toRight(0.3, 6.45, 7.25, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false;
-  box(0.3, XS, fl, fl + 0.02, 7.25, 9.85, M.oak, u, { cast: false });
-  slab(toRight(0.3, 9.85, 16.7, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false;
-  slab(toRight(4.75, 2.3, 6.45, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false;
-  slab(toRight(4.45, 10.0, 11.5, 0.3), [], fl + 0.03, 0.01, M.tile, u).castShadow = false;
+  slab(toRight(0.3, Z_HOUSE, Z_FRONT, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false; // living + kitchen
+  box(0.3, X_COR0, fl, fl + 0.02, Z_FRONT, Z_LIV, M.oak, u, { cast: false }); // deeper living
+  box(X_COR0, XS, fl, fl + 0.02, Z_FRONT, ZM, M.oak, u, { cast: false }); // corridor + stair landing
+  box(XS, XL, fl, fl + 0.02, Z_STAIR0, F2[0], M.oak, u, { cast: false }); // landing beside flight 1
+  box(XS, XR(ZM) - 0.3, fl, fl + 0.02, F2[1], ZM, M.oak, u, { cast: false }); // strip behind flight 2
+  slab(toRight(0.3, ZM, Z_REAR, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false; // hall + bedrooms
+  box(0.3, X_BATH, fl, fl + 0.03, Z_B0, Z_BED, M.tile, u, { cast: false }); // bath
   // side walls (blind)
-  box(0, 0.3, fl, H2, 6.3, 17, M.plaster, u);
-  rightWall(2.0, 17, fl, H2, 0.3, M.plaster, u);
-  // rear wall: two bedroom windows + provisional garden door
+  box(0, 0.3, fl, H2, Z_TER, D, M.plaster, u);
+  rightWall(Z_TER, D, fl, H2, 0.3, M.plaster, u);
+  // rear wall: two bedroom windows + garden door at the end of the passage
   wallX(
     0,
-    W_REAR,
-    16.7,
-    17,
+    XR(D),
+    Z_REAR,
+    D,
     fl,
     H2,
     [
-      [0.95, 3.55, fl + 0.9, fl + 2.35],
-      [5.0, 7.6, fl + 0.9, fl + 2.35],
-      [8.65, 9.55, fl, fl + 2.2],
+      [0.95, 3.65, fl + 0.9, fl + 2.35],
+      [5.15, 7.85, fl + 0.9, fl + 2.35],
+      [8.85, 9.6, fl, fl + 2.2],
     ],
     M.plaster,
     u,
   );
-  glazeX(0.95, 3.55, 16.85, fl + 0.9, fl + 2.35, u, 2, 0.2);
-  glazeX(5.0, 7.6, 16.85, fl + 0.9, fl + 2.35, u, 2, 0.2);
-  box(8.65, 9.55, fl, fl + 2.2, 16.8, 16.86, M.walnut, u);
-  // house front wall facing side terrace: large sliding door
-  wallX(0, 4.75, 6.3, 6.5, fl, H2, [[0.55, 3.95, fl, fl + 2.45]], M.plaster, u);
-  glazeX(0.55, 3.95, 6.4, fl, fl + 2.45, u, 2, 0);
+  glazeX(0.95, 3.65, zg, fl + 0.9, fl + 2.35, u, 2, 0.2);
+  glazeX(5.15, 7.85, zg, fl + 0.9, fl + 2.35, u, 2, 0.2);
+  box(8.85, 9.6, fl, fl + 2.2, Z_REAR + 0.1, Z_REAR + 0.16, M.walnut, u);
+  // front wall onto the terrace: living slider and kitchen slider
+  const frontOps: Opening[] = [
+    [0.55, 3.95, fl, fl + 2.45],
+    [5.0, 9.8, fl, fl + 2.45],
+  ];
+  wallX(0, XR(Z_TER), Z_TER, Z_HOUSE, fl, H2, frontOps, M.plaster, u);
+  const zf = Z_TER + 0.15;
+  glazeX(0.55, 3.95, zf, fl, fl + 2.45, u, 2, 0);
+  glazeX(5.0, 9.8, zf, fl, fl + 2.45, u, 3, 0);
   // timber reveal frame around the living opening
-  box(0.45, 4.05, fl + 2.45, fl + 2.6, 6.24, 6.3, M.clad, u);
-  box(0.45, 0.55, fl, fl + 2.6, 6.24, 6.3, M.clad, u);
-  box(3.95, 4.05, fl, fl + 2.6, 6.24, 6.3, M.clad, u);
-  // enclosed stair lobby above garage, wood clad outside
-  const lobbyFront: Opening[] = [[5.3, 9.6, fl + 0.5, fl + 2.45]];
-  const lobbySide: Opening[] = [[3.0, 5.4, fl + 0.9, fl + 2.45]];
-  wallX(4.45, XR(2.0) - 0.1, 2.0, 2.3, fl, H2, lobbyFront, M.plaster, u);
-  glazeX(5.3, 9.6, 2.15, fl + 0.5, fl + 2.45, u, 4, 0.2);
-  wallZ(2.0, 6.3, 4.45, 4.75, fl, H2, lobbySide, M.plaster, u);
-  glazeZ(3.0, 5.4, 4.6, fl + 0.9, fl + 2.45, u, 2, 0.2);
-  wallX(4.4, XR(1.95), 1.95, 2.0, fl, H2, lobbyFront, M.clad, u);
-  wallZ(2.0, 6.3, 4.4, 4.45, fl, H2, lobbySide, M.clad, u);
-  // interior partitions
-  wallZ(6.5, 11.65, 4.3, 4.45, fl, H2, [[6.5, 7.25, fl, fl + 2.1]], M.wallIn, u); // living | landing/stair/bath
-  casingZ(6.5, 7.25, 4.28, 4.47, fl + 2.1, u);
-  box(4.45, XR(9.85) - 0.15, fl, H2, 9.85, 10.0, M.wallIn, u); // stair | bath
-  box(8.15, 8.3, fl, H2, 10.0, 11.5, M.wallIn, u); // bath | laundry
+  box(0.45, 4.05, fl + 2.45, fl + 2.6, Z_TER - 0.06, Z_TER, M.clad, u);
+  box(0.45, 0.55, fl, fl + 2.6, Z_TER - 0.06, Z_TER, M.clad, u);
+  box(3.95, 4.05, fl, fl + 2.6, Z_TER - 0.06, Z_TER, M.clad, u);
+  // wood cladding on the facade above the garage
+  wallX(4.4, XR(Z_TER - 0.05), Z_TER - 0.05, Z_TER, fl, H2, frontOps.slice(1), M.clad, u);
+  // back wall of the living room (bath and corridor behind it), with the door from the corridor
+  wallX(0.3, X_COR1 + 0.1, Z_LIV, Z_B0, fl, H2, [[3.7, 5.1, fl, fl + 2.1]], M.wallIn, u);
+  casingX(3.7, 5.1, Z_LIV, Z_B0, fl + 2.1, u);
+  // back wall of the kitchen (the stair is behind it, so it stays put)
+  box(X_COR1, XR(Z_FRONT) - 0.15, fl, H2, Z_FRONT, Z_STAIR0, M.wallIn, u);
+  // bath | corridor, with the bath door near the bedrooms
+  wallZ(Z_B0, Z_BED, X_BATH, X_COR0, fl, H2, [[9.5, 10.3, fl, fl + 2.1]], M.wallIn, u);
+  casingZ(9.5, 10.3, X_BATH - 0.02, X_COR0 + 0.02, fl + 2.1, u);
+  // the stair behind its own door: wall on the corridor side, door at the top landing
+  wallZ(
+    Z_STAIR0,
+    ZM,
+    X_COR1,
+    X_COR1 + 0.1,
+    fl,
+    H2,
+    [[F2[0] + 0.15, F2[1] - 0.1, fl, fl + 2.1]],
+    M.wallIn,
+    u,
+  );
+  box(X_COR1 + 0.03, X_COR1 + 0.07, fl, fl + 2.1, F2[0] + 0.15, F2[1] - 0.1, M.walnut, u); // stair door
+  box(X_COR1 + 0.07, X_COR1 + 0.1, fl + 0.95, fl + 1.0, F2[1] - 0.3, F2[1] - 0.2, M.chrome, u);
+  box(X_COR1, XR(Z_STAIR1) - 0.15, fl, H2, Z_STAIR1, Z_HALL, M.wallIn, u); // stair | hall
+  // guards around the stair opening
+  box(XS, XL, fl, fl + 1.0, F2[0] - 0.015, F2[0] + 0.015, M.glassRail, u, { cast: false });
+  box(XS, XL, fl + 0.97, fl + 1.0, F2[0] - 0.03, F2[0] + 0.03, M.oakFurn, u);
+  box(XL - 0.015, XL + 0.015, fl, fl + 1.0, Z_STAIR0, F2[0], M.glassRail, u, { cast: false });
+  box(XL - 0.03, XL + 0.03, fl + 0.97, fl + 1.0, Z_STAIR0, F2[0], M.oakFurn, u);
+  box(XS, XR(F2[1]) - 0.3, fl, fl + 1.0, F2[1] - 0.015, F2[1] + 0.015, M.glassRail, u, {
+    cast: false,
+  });
+  box(XS, XR(F2[1]) - 0.3, fl + 0.97, fl + 1.0, F2[1] - 0.03, F2[1] + 0.03, M.oakFurn, u);
+  // hall | bedrooms + passage
   wallX(
-    4.45,
-    XR(11.5) - 0.15,
-    11.5,
-    11.65,
+    0.3,
+    XR(Z_BED) - 0.15,
+    Z_BED,
+    ZB,
     fl,
     H2,
     [
-      [5.6, 6.4, fl, fl + 2.1],
-      [8.65, 9.45, fl, fl + 2.1],
+      [3.45, 4.25, fl, fl + 2.1],
+      [4.65, 5.45, fl, fl + 2.1],
+      [X_PASS, XR(ZB) - 0.3, fl, fl + 2.3],
     ],
     M.wallIn,
     u,
   );
-  casingX(5.6, 6.4, 11.5, 11.65, fl + 2.1, u);
-  casingX(8.65, 9.45, 11.5, 11.65, fl + 2.1, u);
-  wallX(
-    0.3,
-    XR(12.85) - 0.15,
-    12.85,
-    13.0,
-    fl,
-    H2,
-    [
-      [3.1, 3.95, fl, fl + 2.1],
-      [4.6, 5.45, fl, fl + 2.1],
-      [8.4, XR(13.0) - 0.3, fl, fl + 2.3],
-    ],
-    M.wallIn,
-    u,
-  ); // hall | bedrooms
-  casingX(3.1, 3.95, 12.85, 13.0, fl + 2.1, u);
-  casingX(4.6, 5.45, 12.85, 13.0, fl + 2.1, u);
-  box(4.2, 4.35, fl, H2, 13.0, 16.7, M.wallIn, u); // bedroom | bedroom
-  box(8.25, 8.4, fl, H2, 13.0, 16.7, M.wallIn, u); // bedroom 2 | passage
-  // stair void guard (top of flight 1)
-  box(XS, XR(7.25) - 0.3, fl, fl + 1.0, 7.24, 7.27, M.glassRail, u, { cast: false });
-  box(XS, XR(7.25) - 0.3, fl + 0.97, fl + 1.0, 7.22, 7.29, M.oakFurn, u);
-  box(XS - 0.015, XS + 0.015, fl, fl + 1.0, 7.25, 8.4, M.glassRail, u, { cast: false });
-  box(XS - 0.03, XS + 0.03, fl + 0.97, fl + 1.0, 7.25, 8.4, M.oakFurn, u);
+  casingX(3.45, 4.25, Z_BED, ZB, fl + 2.1, u);
+  casingX(4.65, 5.45, Z_BED, ZB, fl + 2.1, u);
+  box(X_B2 - 0.15, X_B2, fl, H2, ZB, Z_REAR, M.wallIn, u); // bedroom | bedroom
+  box(X_PASS - 0.15, X_PASS, fl, H2, ZB, Z_REAR, M.wallIn, u); // bedroom 2 | passage
 
   /* upper furniture */
   const f = G.upperFurn;
   const F = fl + 0.02;
-  // living (4.0 m clear between the party wall and the stair-side partition)
-  box(0.75, 3.6, F, F + 0.01, 6.9, 9.2, M.rug, f, { cast: false });
-  box(0.35, 1.25, F, F + 0.42, 6.9, 9.3, M.sofa, f);
-  box(0.35, 0.6, F + 0.42, F + 0.85, 6.9, 9.3, M.sofa, f);
-  box(0.35, 1.25, F + 0.42, F + 0.62, 6.9, 7.1, M.sofa, f);
-  box(0.35, 1.25, F + 0.42, F + 0.62, 9.1, 9.3, M.sofa, f);
-  box(0.62, 1.2, F + 0.42, F + 0.52, 7.12, 8.08, M.linen, f);
-  box(0.62, 1.2, F + 0.42, F + 0.52, 8.12, 9.08, M.linen, f);
-  box(0.62, 0.78, F + 0.5, F + 0.82, 7.3, 7.75, M.clay, f);
-  box(0.62, 0.78, F + 0.5, F + 0.82, 8.6, 9.0, M.olive, f);
-  box(1.85, 2.65, F, F + 0.36, 7.6, 8.6, M.walnut, f);
-  cyl(2.25, F + 0.36, F + 0.5, 8.0, 0.09, M.clay, f, 14, 0.06);
-  box(3.92, 4.3, F, F + 0.5, 7.3, 9.2, M.walnut, f);
-  box(4.2, 4.3, F + 0.8, F + 2.6, 7.0, 9.5, M.clad, f);
-  box(4.15, 4.2, F + 1.0, F + 1.75, 7.6, 8.9, M.black, f);
-  cyl(0.6, F, F + 1.55, 6.75, 0.015, M.black, f, 8);
-  cyl(0.6, F + 1.45, F + 1.7, 6.75, 0.14, M.lampOn, f, 16, 0.18);
-  box(3.2, 3.65, F, F + 0.42, 6.65, 7.05, M.oakFurn, f); // side stool
-  cyl(3.85, F, F + 0.45, 6.85, 0.17, M.pot, f, 14);
-  foliage(0.42, M.leaf, 3.85, F + 1.0, 6.85, f);
-  // kitchen along party wall
-  box(0.3, 0.92, F, F + 0.86, 9.7, 11.0, M.oakFurn, f);
-  box(0.3, 0.95, F + 0.86, F + 0.9, 9.7, 11.0, M.counter, f);
-  box(0.3, 0.32, F + 0.9, F + 1.5, 9.7, 11.0, M.terracotta, f);
-  box(0.3, 0.65, F + 1.5, F + 2.25, 9.7, 11.0, M.oakFurn, f);
-  box(0.3, 0.95, F, F + 2.25, 11.0, 11.62, M.white, f); // tall fridge unit
-  box(0.45, 0.8, F + 0.9, F + 0.92, 10.15, 10.7, M.black, f); // hob
-  box(0.55, 0.75, F + 0.9, F + 0.96, 9.9, 10.05, M.chrome, f); // tap/sink
-  // dining
-  box(1.85, 2.8, F + 0.73, F + 0.77, 9.85, 11.35, M.oakFurn, f);
-  box(2.28, 2.37, F, F + 0.73, 10.0, 11.2, M.walnut, f);
+  // living, facing the terrace
+  box(0.6, 3.7, F, F + 0.01, 3.3, 6.2, M.rug, f, { cast: false });
+  box(0.5, 2.9, F, F + 0.42, 5.6, 6.5, M.sofa, f);
+  box(0.5, 2.9, F + 0.42, F + 0.85, 6.25, 6.5, M.sofa, f);
+  box(0.5, 0.7, F + 0.42, F + 0.62, 5.6, 6.5, M.sofa, f);
+  box(2.7, 2.9, F + 0.42, F + 0.62, 5.6, 6.5, M.sofa, f);
+  box(0.72, 1.68, F + 0.42, F + 0.52, 5.65, 6.23, M.linen, f);
+  box(1.72, 2.68, F + 0.42, F + 0.52, 5.65, 6.23, M.linen, f);
+  box(0.9, 1.3, F + 0.5, F + 0.82, 6, 6.22, M.clay, f);
+  box(2.2, 2.6, F + 0.5, F + 0.82, 6, 6.22, M.olive, f);
+  box(1.1, 2.4, F, F + 0.36, 4.2, 4.9, M.walnut, f); // coffee table
+  cyl(1.75, F + 0.36, F + 0.5, 4.55, 0.09, M.clay, f, 14, 0.06);
+  box(3.0, 3.75, F, F + 0.42, 3.6, 4.35, M.sofa, f); // armchair
+  box(3.6, 3.75, F + 0.42, F + 0.8, 3.6, 4.35, M.sofa, f);
+  box(0.3, 0.7, F, F + 0.5, 2.9, 4.9, M.walnut, f); // media unit on the party wall
+  box(0.3, 0.34, F + 0.9, F + 1.65, 3.3, 4.6, M.black, f);
+  cyl(0.6, F, F + 1.55, 5.0, 0.015, M.black, f, 8);
+  cyl(0.6, F + 1.45, F + 1.7, 5.0, 0.14, M.lampOn, f, 16, 0.18);
+  cyl(3.65, F, F + 0.45, 2.7, 0.17, M.pot, f, 14);
+  foliage(0.42, M.leaf, 3.65, F + 1.0, 2.7, f);
+  // kitchen along the stair-side wall, dining in front of it
+  const ZK = Z_FRONT - 0.6;
+  box(6.8, 9.4, F, F + 0.86, ZK, Z_FRONT, M.oakFurn, f);
+  box(6.8, 9.4, F + 0.86, F + 0.9, ZK, Z_FRONT, M.counter, f);
+  box(6.8, 9.4, F + 0.9, F + 1.5, Z_FRONT - 0.02, Z_FRONT, M.terracotta, f);
+  box(6.8, 9.4, F + 1.5, F + 2.25, Z_FRONT - 0.35, Z_FRONT, M.oakFurn, f);
+  box(9.4, XR(Z_FRONT) - 0.35, F, F + 2.25, ZK - 0.05, Z_FRONT, M.white, f); // tall fridge unit
+  box(8.3, 8.9, F + 0.9, F + 0.92, ZK + 0.08, ZK + 0.52, M.black, f); // hob
+  box(7.2, 7.4, F + 0.9, F + 0.96, ZK + 0.35, ZK + 0.5, M.chrome, f); // tap/sink
+  const DX = 7.0;
+  const DZ = 3.4;
+  box(DX, DX + 1.8, F + 0.73, F + 0.77, DZ, DZ + 0.9, M.oakFurn, f);
+  box(DX + 0.15, DX + 1.65, F, F + 0.73, DZ + 0.4, DZ + 0.5, M.walnut, f);
   (
     [
-      [1.75, 10.25],
-      [1.75, 10.95],
-      [2.9, 10.25],
-      [2.9, 10.95],
+      [DX + 0.45, DZ - 0.2],
+      [DX + 1.35, DZ - 0.2],
+      [DX + 0.45, DZ + 1.1],
+      [DX + 1.35, DZ + 1.1],
     ] as const
   ).forEach(([x, z]) => {
-    box(x - 0.21, x + 0.21, F + 0.44, F + 0.48, z - 0.2, z + 0.2, M.walnut, f);
-    for (const dx of [-0.18, 0.18])
-      for (const dz of [-0.17, 0.17])
+    box(x - 0.2, x + 0.2, F + 0.44, F + 0.48, z - 0.21, z + 0.21, M.walnut, f);
+    for (const dx of [-0.17, 0.17])
+      for (const dz of [-0.18, 0.18])
         box(x + dx - 0.02, x + dx + 0.02, F, F + 0.44, z + dz - 0.02, z + dz + 0.02, M.walnut, f);
-    const back = x < 2.3 ? x - 0.22 : x + 0.18;
-    box(back, back + 0.04, F + 0.48, F + 0.86, z - 0.2, z + 0.2, M.walnut, f);
+    const back = z < DZ ? z - 0.22 : z + 0.18;
+    box(x - 0.2, x + 0.2, F + 0.48, F + 0.86, back, back + 0.04, M.walnut, f);
   });
-  cyl(2.32, H2 - 0.9, H2, 10.6, 0.004, M.black, f, 4);
-  cyl(2.32, H2 - 1.12, H2 - 0.9, 10.6, 0.04, M.lampOn, f, 20, 0.22);
-  // bath (3.70 x 1.50)
-  box(4.45, 5.55, F, F + 0.05, 10.0, 11.5, M.tile, f);
-  box(5.55, 5.57, F, F + 2.0, 10.0, 11.0, M.glassRail, f, { cast: false });
-  box(4.45, 4.47, F, F + 2.2, 10.0, 11.5, M.tile, f);
-  box(4.45, 8.15, F, F + 1.3, 10.0, 10.02, M.tile, f);
-  cyl(4.9, F + 1.9, F + 1.95, 10.3, 0.12, M.chrome, f, 16);
-  box(5.95, 7.05, F + 0.5, F + 0.85, 10.0, 10.5, M.oakFurn, f);
-  box(6.05, 6.95, F + 0.85, F + 0.9, 10.05, 10.45, M.white, f);
-  box(6.05, 6.95, F + 1.1, F + 1.9, 10.0, 10.02, M.chrome, f);
-  box(7.4, 7.85, F, F + 0.42, 10.0, 10.6, M.white, f);
-  box(7.4, 7.85, F + 0.42, F + 0.8, 10.0, 10.15, M.white, f);
-  // laundry
-  box(8.45, 9.05, F, F + 0.85, 10.02, 10.62, M.white, f);
-  box(8.45, 9.05, F + 0.85, F + 1.7, 10.02, 10.62, M.white, f);
-  [F + 0.45, F + 1.28].forEach((y) => {
-    const dr = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.02, 24), M.black);
-    dr.rotation.x = Math.PI / 2;
-    dr.position.set(8.75, y, -10.63);
-    f.add(dr);
-  });
-  box(9.35, 9.9, F + 1.6, F + 2.2, 10.02, 11.45, M.oakFurn, f);
+  cyl(DX + 0.9, H2 - 0.9, H2, DZ + 0.45, 0.004, M.black, f, 4);
+  cyl(DX + 0.9, H2 - 1.12, H2 - 0.9, DZ + 0.45, 0.04, M.lampOn, f, 20, 0.22);
+  // bath (2.70 × 3.80): tub, shower, double vanity, WC, washing machine
+  box(0.3, 1.9, F, F + 0.55, Z_B0, Z_B0 + 0.75, M.white, f); // bathtub
+  box(0.4, 1.8, F + 0.5, F + 0.56, Z_B0 + 0.08, Z_B0 + 0.67, M.glass, f, { cast: false });
+  box(2.0, 2.02, F, F + 2.0, Z_B0, Z_B0 + 1.0, M.glassRail, f, { cast: false }); // shower screen
+  box(2.0, X_BATH, F, F + 2.0, Z_B0 + 1.0, Z_B0 + 1.02, M.glassRail, f, { cast: false });
+  cyl(2.5, F + 1.9, F + 1.95, Z_B0 + 0.45, 0.12, M.chrome, f, 16);
+  box(0.3, 0.85, F + 0.5, F + 0.85, 7.95, 9.15, M.oakFurn, f); // double vanity
+  box(0.35, 0.8, F + 0.85, F + 0.9, 8.0, 8.5, M.white, f);
+  box(0.35, 0.8, F + 0.85, F + 0.9, 8.6, 9.1, M.white, f);
+  box(0.3, 0.32, F + 1.1, F + 1.9, 7.95, 9.15, M.chrome, f); // mirror
+  box(0.3, 0.9, F, F + 0.42, 9.45, 9.9, M.white, f); // WC
+  box(0.3, 0.45, F + 0.42, F + 0.8, 9.45, 9.9, M.white, f);
+  box(1.3, 1.9, F, F + 0.85, Z_BED - 0.6, Z_BED, M.white, f); // washing machine
+  const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.02, 24), M.black);
+  drum.rotation.x = Math.PI / 2;
+  drum.position.set(1.6, F + 0.45, -(Z_BED - 0.61));
+  f.add(drum);
+  box(1.3, 1.9, F + 0.85, F + 0.88, Z_BED - 0.6, Z_BED, M.counter, f);
+  // corridor: ceiling light
+  cyl((X_COR0 + X_COR1) / 2, H2 - 0.06, H2, 7.8, 0.18, M.lampOn, f, 24);
+  // stair landing: shoe cabinet beside flight 1
+  box(XS + 0.2, XL - 0.2, F, F + 0.9, Z_STAIR0, Z_STAIR0 + 0.4, M.oakFurn, f);
   // hall
-  box(0.35, 0.75, F, F + 0.8, 12.0, 12.8, M.walnut, f);
-  // bedroom 1 (3.90 x 3.70)
-  box(0.3, 2.85, F, H2 - 0.05, 13.0, 13.6, M.oakFurn, f);
+  box(7.0, 7.4, F, F + 0.8, Z_HALL + 0.05, Z_HALL + 0.4, M.walnut, f);
+  // bedroom 1 (4.05 x 3.70)
+  const bz = (z: number) => z - 2.3; // bedroom furniture as in Revision 05, 2.30 m nearer the street
+  box(0.3, 2.85, F, H2 - 0.05, bz(13.0), bz(13.6), M.oakFurn, f);
   for (let x = 0.82; x < 2.8; x += 0.51)
-    box(x - 0.005, x + 0.005, F + 0.05, H2 - 0.08, 13.6, 13.61, M.walnut, f);
-  box(0.3, 0.38, F, F + 1.15, 14.2, 15.9, M.sofa, f);
-  box(0.38, 2.4, F, F + 0.32, 14.25, 15.85, M.walnut, f);
-  box(0.4, 2.38, F + 0.32, F + 0.55, 14.3, 15.8, M.white, f);
-  box(0.95, 2.4, F + 0.55, F + 0.6, 14.28, 15.82, M.linen, f);
-  box(1.9, 2.42, F + 0.56, F + 0.64, 14.27, 15.83, M.clay, f);
-  box(0.45, 0.85, F + 0.55, F + 0.72, 14.4, 14.95, M.white, f);
-  box(0.45, 0.85, F + 0.55, F + 0.72, 15.15, 15.7, M.white, f);
+    box(x - 0.005, x + 0.005, F + 0.05, H2 - 0.08, bz(13.6), bz(13.61), M.walnut, f);
+  box(0.3, 0.38, F, F + 1.15, bz(14.2), bz(15.9), M.sofa, f);
+  box(0.38, 2.4, F, F + 0.32, bz(14.25), bz(15.85), M.walnut, f);
+  box(0.4, 2.38, F + 0.32, F + 0.55, bz(14.3), bz(15.8), M.white, f);
+  box(0.95, 2.4, F + 0.55, F + 0.6, bz(14.28), bz(15.82), M.linen, f);
+  box(1.9, 2.42, F + 0.56, F + 0.64, bz(14.27), bz(15.83), M.clay, f);
+  box(0.45, 0.85, F + 0.55, F + 0.72, bz(14.4), bz(14.95), M.white, f);
+  box(0.45, 0.85, F + 0.55, F + 0.72, bz(15.15), bz(15.7), M.white, f);
   [13.75, 16.0].forEach((z) => {
-    box(0.3, 0.75, F, F + 0.5, z, z + 0.45, M.walnut, f);
-    cyl(0.52, F + 0.5, F + 0.75, z + 0.22, 0.09, M.lampOn, f, 14, 0.12);
+    box(0.3, 0.75, F, F + 0.5, bz(z), bz(z + 0.45), M.walnut, f);
+    cyl(0.52, F + 0.5, F + 0.75, bz(z + 0.22), 0.09, M.lampOn, f, 14, 0.12);
   });
-  box(1.0, 3.3, F, F + 0.01, 14.0, 16.3, M.rug, f, { cast: false });
-  box(3.6, 4.2, F + 0.73, F + 0.77, 14.4, 15.8, M.oakFurn, f); // desk on the partition
-  box(3.62, 4.18, F, F + 0.73, 14.42, 14.48, M.oakFurn, f);
-  box(3.62, 4.18, F, F + 0.73, 15.72, 15.78, M.oakFurn, f);
-  // bedroom 2 (3.90 x 3.70)
-  box(5.7, 8.25, F, H2 - 0.05, 13.0, 13.6, M.oakFurn, f);
+  box(1.0, 3.3, F, F + 0.01, bz(14.0), bz(16.3), M.rug, f, { cast: false });
+  box(3.75, 4.35, F + 0.73, F + 0.77, bz(14.4), bz(15.8), M.oakFurn, f); // desk on the partition
+  box(3.77, 4.33, F, F + 0.73, bz(14.42), bz(14.48), M.oakFurn, f);
+  box(3.77, 4.33, F, F + 0.73, bz(15.72), bz(15.78), M.oakFurn, f);
+  // bedroom 2 (4.05 x 3.70), Revision 05 furniture moved 0.30 m right
+  const b2 = (x: number) => x + 0.3;
+  box(b2(5.7), b2(8.25), F, H2 - 0.05, bz(13.0), bz(13.6), M.oakFurn, f);
   for (let x = 6.2; x < 8.2; x += 0.51)
-    box(x - 0.005, x + 0.005, F + 0.05, H2 - 0.08, 13.6, 13.61, M.walnut, f);
-  box(8.17, 8.25, F, F + 1.15, 14.2, 15.9, M.sofa, f);
-  box(6.15, 8.17, F, F + 0.32, 14.25, 15.85, M.walnut, f);
-  box(6.17, 8.15, F + 0.32, F + 0.55, 14.3, 15.8, M.white, f);
-  box(6.15, 7.6, F + 0.55, F + 0.6, 14.28, 15.82, M.olive, f);
-  box(7.7, 8.1, F + 0.55, F + 0.72, 14.4, 15.7, M.white, f);
-  box(4.45, 5.55, F + 0.73, F + 0.77, 16.1, 16.65, M.oakFurn, f);
-  box(4.47, 4.53, F, F + 0.73, 16.12, 16.62, M.oakFurn, f);
-  box(5.47, 5.53, F, F + 0.73, 16.12, 16.62, M.oakFurn, f);
-  box(4.8, 5.2, F + 0.42, F + 0.46, 15.6, 16.0, M.walnut, f);
-  box(4.8, 5.2, F + 0.46, F + 0.85, 15.56, 15.6, M.walnut, f);
-  // lobby
-  box(5.3, 9.4, F, F + 0.01, 2.7, 5.9, M.rug, f, { cast: false });
-  box(9.6, 10.15, F, H2 - 0.05, 2.6, 4.8, M.oakFurn, f);
-  for (let z = 3.15; z < 4.8; z += 0.55)
-    box(9.59, 9.6, F + 0.05, H2 - 0.08, z - 0.005, z + 0.005, M.walnut, f);
-  box(4.85, 5.3, F, F + 0.45, 4.6, 6.0, M.walnut, f);
-  box(4.87, 5.28, F + 0.45, F + 0.52, 4.65, 5.95, M.linen, f);
-  cyl(5.2, F, F + 0.5, 2.75, 0.2, M.pot, f, 14);
-  foliage(0.55, M.leafDark, 5.2, F + 1.25, 2.75, f);
-  cyl(7.5, H2 - 0.06, H2, 4.3, 0.22, M.lampOn, f, 24);
+    box(b2(x) - 0.005, b2(x) + 0.005, F + 0.05, H2 - 0.08, bz(13.6), bz(13.61), M.walnut, f);
+  box(b2(8.17), b2(8.25), F, F + 1.15, bz(14.2), bz(15.9), M.sofa, f);
+  box(b2(6.15), b2(8.17), F, F + 0.32, bz(14.25), bz(15.85), M.walnut, f);
+  box(b2(6.17), b2(8.15), F + 0.32, F + 0.55, bz(14.3), bz(15.8), M.white, f);
+  box(b2(6.15), b2(7.6), F + 0.55, F + 0.6, bz(14.28), bz(15.82), M.olive, f);
+  box(b2(7.7), b2(8.1), F + 0.55, F + 0.72, bz(14.4), bz(15.7), M.white, f);
+  box(b2(4.45), b2(5.55), F + 0.73, F + 0.77, bz(16.1), bz(16.65), M.oakFurn, f);
+  box(b2(4.47), b2(4.53), F, F + 0.73, bz(16.12), bz(16.62), M.oakFurn, f);
+  box(b2(5.47), b2(5.53), F, F + 0.73, bz(16.12), bz(16.62), M.oakFurn, f);
+  box(b2(4.8), b2(5.2), F + 0.42, F + 0.46, bz(15.6), bz(16.0), M.walnut, f);
+  box(b2(4.8), b2(5.2), F + 0.46, F + 0.85, bz(15.56), bz(15.6), M.walnut, f);
 
   /* ================= ROOF ================= */
-  const roofPoly: Point[] = [
-    [4.45, 2],
-    [XR(2), 2],
-    [W_REAR, 17],
-    [0, 17],
-    [0, 6.3],
-    [4.45, 6.3],
-  ];
+  const roofPoly = toRight(0, Z_TER, D, 0);
   const skys = [
-    rect(1.4, 9.6, 3.0, 10.9),
-    rect(5.9, 10.35, 7.3, 11.15),
-    rect(5.6, 11.85, 7.1, 12.55),
+    rect(7.2, Z_STAIR0 + 0.4, 9.0, Z_STAIR1 - 0.4), // stair
+    rect(0.8, 7.7, 2.6, 9.2), // bath
+    rect(5.4, Z_HALL + 0.25, 6.8, Z_BED - 0.25), // hall
+    rect(7.3, 3.2, 9.0, 4.6), // dining
   ];
   slab(roofPoly, skys, ROOF, ROOF - H2, M.slab, G.roof);
   skys.forEach((s) => {
@@ -1179,45 +1234,49 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   // parapets
   const pt = 0.2;
   const pm = M.plaster;
-  const parapets: [number, number, number, number][] = [
-    [4.45, XR(2.0) - 0.1, 2.0, 2.0 + pt],
-    [0, W_REAR, 17 - pt, 17],
-    [0, pt, 6.3, 17],
-    [0, 4.45, 6.3, 6.3 + pt],
-    [4.45, 4.45 + pt, 2.0, 6.3],
+  const parapets: (readonly [number, number, number, number])[] = [
+    [0, XR(Z_TER) - 0.1, Z_TER, Z_TER + pt],
+    [0, XR(D) - 0.1, D - pt, D],
+    [0, pt, Z_TER, D],
   ];
   parapets.forEach(([a, b, c, d]) => {
     box(a, b, ROOF, PARA, c, d, pm, G.roof);
     box(a - 0.02, b + 0.02, PARA, PARA + 0.05, c - 0.02, d + 0.02, M.coping, G.roof);
   });
-  rightWall(2.0, 17, ROOF, PARA, pt, pm, G.roof);
-  rightWall(2.0, 17, PARA, PARA + 0.05, pt, M.coping, G.roof, 0.02);
-  // wood cladding continues up the lobby parapet (front + side)
-  box(4.4, XR(1.95), ROOF, PARA, 1.95, 2.0, M.clad, G.roof);
-  box(4.4, 4.45, ROOF, PARA, 1.95, 6.3, M.clad, G.roof);
+  rightWall(Z_TER, D, ROOF, PARA, pt, pm, G.roof);
+  rightWall(Z_TER, D, PARA, PARA + 0.05, pt, M.coping, G.roof, 0.02);
+  // wood cladding continues up the parapet above the garage
+  box(4.4, XR(Z_TER - 0.05), ROOF, PARA, Z_TER - 0.05, Z_TER, M.clad, G.roof);
   // roof plant + gravel
-  slab(toRight(0.2, 6.5, 16.8, 0.2), [], ROOF + 0.04, 0.04, M.concrete, G.roof).castShadow = false;
-  box(7.6, 8.8, ROOF, ROOF + 0.7, 14.0, 15.0, M.chrome, G.roof);
-  box(1.0, 2.2, ROOF, ROOF + 0.35, 14.5, 15.2, M.white, G.roof);
+  slab(
+    toRight(0.2, Z_TER + 0.2, D - 0.2, 0.2),
+    skys,
+    ROOF + 0.04,
+    0.04,
+    M.concrete,
+    G.roof,
+  ).castShadow = false;
+  box(7.6, 8.8, ROOF, ROOF + 0.7, 11.8, 12.8, M.chrome, G.roof);
+  box(1.0, 2.2, ROOF, ROOF + 0.35, 12.6, 13.3, M.white, G.roof);
   // solar water heater / pv frame
-  box(1.0, 3.6, ROOF + 0.3, ROOF + 0.36, 12.6, 14.0, M.carGlass, G.roof);
-  box(1.0, 3.6, ROOF, ROOF + 0.3, 13.9, 14.0, M.steel, G.roof);
+  box(1.0, 3.6, ROOF + 0.3, ROOF + 0.36, 10.6, 12.0, M.carGlass, G.roof);
+  box(1.0, 3.6, ROOF, ROOF + 0.3, 11.9, 12.0, M.steel, G.roof);
 
   /* ================= PROVISIONAL REAR GARDEN STAIR ================= */
   {
     const r = G.rearStair;
-    box(8.35, 9.85, fl - 0.12, fl, 17.0, 18.2, M.steel, r); // landing
+    box(8.35, 9.85, fl - 0.12, fl, D, D + 1.2, M.steel, r); // landing
     const n = 18;
     const dx = 0.26;
     for (let i = 1; i < n; i++) {
       const y = fl - i * R;
       const x = 8.35 - i * dx;
-      box(x, x + dx + 0.02, y - 0.04, y, 17.05, 18.05, M.steel, r);
+      box(x, x + dx + 0.02, y - 0.04, y, D + 0.05, D + 1.05, M.steel, r);
     }
     const x0 = 8.35 - n * dx;
     const len = Math.hypot(n * dx, fl);
     const ang = Math.atan2(fl, n * dx);
-    [17.05, 18.05].forEach((z) => {
+    [D + 0.05, D + 1.05].forEach((z) => {
       const b = new THREE.Mesh(new THREE.BoxGeometry(len, 0.22, 0.06), M.steel);
       b.position.set(x0 + (n * dx) / 2 + 0.1, fl / 2 - 0.15, -z);
       b.rotation.z = ang;
@@ -1228,9 +1287,9 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
       h.rotation.z = ang;
       r.add(h);
     });
-    box(8.35, 9.85, fl, fl + 1.0, 18.18, 18.22, M.steel, r);
-    box(9.81, 9.85, fl, fl + 1.0, 17.0, 18.2, M.steel, r);
-    box(9.0, 9.85, 0, fl - 0.12, 18.1, 18.18, M.steel, r);
+    box(8.35, 9.85, fl, fl + 1.0, D + 1.18, D + 1.22, M.steel, r);
+    box(9.81, 9.85, fl, fl + 1.0, D, D + 1.2, M.steel, r);
+    box(9.0, 9.85, 0, fl - 0.12, D + 1.1, D + 1.18, M.steel, r);
   }
 
   /* ================= LIGHTS ================= */
@@ -1264,17 +1323,17 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
     warm.push([l, i]);
     return l;
   }
-  pl(2.1, H2 - 0.3, 8.0, 0.9);
-  pl(2.1, H2 - 0.3, 10.6, 0.8);
-  pl(7.5, H2 - 0.3, 4.3, 0.8);
-  pl(2.25, H2 - 0.3, 14.8, 0.6);
-  pl(6.3, H2 - 0.3, 14.8, 0.6);
-  pl(6.3, H2 - 0.3, 10.7, 0.5);
-  pl(5.0, H2 - 0.3, 12.3, 0.5);
-  pl(5.5, H2 - 0.3, 8.6, 0.6);
-  pl(7.6, W1 - 0.3, 3.8, 0.8, 7, 0xfff3e6);
+  pl(2.1, H2 - 0.3, 4.4, 0.9);
+  pl(7.9, H2 - 0.3, 4.4, 0.8);
+  pl(5.0, H2 - 0.3, 7.7, 0.6);
+  pl(2.25, H2 - 0.3, 12.5, 0.6);
+  pl(6.5, H2 - 0.3, 12.5, 0.6);
+  pl(1.65, H2 - 0.3, 8.6, 0.6);
+  pl(5.5, H2 - 0.3, 9.9, 0.5);
+  pl(9.2, H2 - 0.3, 11.8, 0.3);
+  pl(7.2, W1 - 0.3, 4.0, 0.8, 8, 0xfff3e6);
   pl(2.4, W1 - 0.3, 5.0, 0.7, 8, 0xf4f6ff);
-  pl(5.0, W1 - 0.3, 13.0, 0.9, 9, 0xf4f6ff);
+  pl(5.0, W1 - 0.3, 12.8, 0.9, 9, 0xf4f6ff);
 
   /* sky */
   const skyTexture = (() => {
@@ -1299,22 +1358,22 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   type Level = 'ground' | 'upper';
   const labelDefs: readonly (readonly [string, string, number, number, number, Level, boolean?])[] =
     [
-      ['Rental warehouse', '≈ 100 m² clear, L-shaped', 2.4, 1.2, 6.0, 'ground'],
-      ['Rear storage', 'rental', 3.6, 1.2, 13.0, 'ground'],
-      ['WC', '2.0 × 2.0', 8.75, 1.2, 15.6, 'ground'],
-      ['Private garage', '5.55–5.90 × 6.80', 7.6, 1.9, 3.5, 'ground'],
-      ['U-stair', 'garage access only', 7.7, 2.2, 8.6, 'ground'],
-      ['Front terrace', '10.8 → 10.7 × 2.0', 7.4, H1 + 0.4, 0.9, 'upper'],
-      ['Side terrace', '4.45 × 4.3', 2.2, H1 + 0.4, 4.6, 'upper'],
-      ['Lobby', 'enclosed, above garage', 7.5, H1 + 0.4, 4.0, 'upper'],
-      ['Living', '4.0 m wide', 2.2, H1 + 0.4, 7.9, 'upper'],
-      ['Kitchen / dining', '', 2.2, H1 + 0.4, 10.7, 'upper'],
-      ['Bath', '3.7 × 1.5, skylight', 6.3, H1 + 0.4, 10.75, 'upper'],
-      ['Laundry', '1.65 × 1.5', 9.1, H1 + 0.4, 11.0, 'upper'],
-      ['Hall', '1.2 m clear', 5.0, H1 + 0.4, 12.4, 'upper'],
-      ['Bedroom', '3.9 × 3.7 ≈ 14.4 m²', 2.25, H1 + 0.4, 15.0, 'upper'],
-      ['Bedroom', '3.9 × 3.7 ≈ 14.4 m²', 6.3, H1 + 0.4, 15.0, 'upper'],
-      ['Garden exit', 'provisional', 9.05, H1 + 0.4, 15.5, 'upper', true],
+      ['Storage', '≈ 91 m² + WC', 2.5, 1.2, 5.0, 'ground'],
+      ['Rear storage', '9.4–9.7 × 5.45', 5.0, 1.2, 12.0, 'ground'],
+      ['WC (storage)', '1.35 × 1.55, door from rear storage', 5.6, 1.2, 8.0, 'ground'],
+      ['Free space', '2.4 m wide between WC and stair', 7.6, 1.2, 6.8, 'ground'],
+      ['Private garage', '5.1 × 8.5, 2 cars side by side', 7.5, 1.9, 2.6, 'ground'],
+      ['L-stair', '1.1–1.4 wide, turns left', 9.3, 2.2, 6.5, 'ground'],
+      ['Front terrace', '10.8 → 10.7 × 2.0', 5.6, H1 + 0.4, 0.9, 'upper'],
+      ['Living', '5.2 × 4.3', 2.0, H1 + 0.4, 3.6, 'upper'],
+      ['Kitchen / dining', '4.65–4.85 × 4.0', 7.9, H1 + 0.4, 4.9, 'upper'],
+      ['Stair door', 'stair closed off', 6.1, H1 + 0.4, 8.5, 'upper'],
+      ['Corridor', '2.35 m wide', 4.3, H1 + 0.4, 7.6, 'upper'],
+      ['Bath', '2.7 × 3.8, tub + shower', 1.65, H1 + 0.4, 8.6, 'upper'],
+      ['Hall', '1.35 m clear', 5.5, H1 + 0.4, 9.85, 'upper'],
+      ['Bedroom', '4.05 × 3.7 ≈ 15.0 m²', 2.3, H1 + 0.4, 12.7, 'upper'],
+      ['Bedroom', '4.05 × 3.7 ≈ 15.0 m²', 6.5, H1 + 0.4, 12.7, 'upper'],
+      ['Garden passage', '1.0–1.2 m', 9.2, H1 + 0.4, 13.2, 'upper', true],
     ];
   const labels = labelDefs.map(([title, sub, x, y, z, lv, warn]) => {
     const d = document.createElement('div');
@@ -1334,15 +1393,15 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   const VIEWS: Record<ViewName, { cam: THREE.Vector3; tgt: THREE.Vector3; mode: 'all' | Level }> = {
     front: { cam: V(1.6, 3.2, -18), tgt: V(5.4, 3.9, 4), mode: 'all' },
     aerial: { cam: V(-11, 21, -12.5), tgt: V(5.2, 2.5, 8.5), mode: 'all' },
-    rear: { cam: V(15, 6.5, 31.5), tgt: V(5.2, 3.4, 14), mode: 'all' },
-    terrace: { cam: V(2.9, H1 + 1.6, 0.45), tgt: V(1.8, H1 + 1.1, 6.0), mode: 'all' },
-    upper: { cam: V(5.2, 25, -1.5), tgt: V(5.2, H1, 7.6), mode: 'upper' },
-    ground: { cam: V(5.2, 23, -1.5), tgt: V(5.2, 0, 7.4), mode: 'ground' },
-    living: { cam: V(3.95, H1 + 1.55, 10.9), tgt: V(1.0, H1 + 1.05, 7.0), mode: 'all' },
-    kitchen: { cam: V(3.9, H1 + 1.6, 7.0), tgt: V(1.0, H1 + 1.0, 11.0), mode: 'all' },
-    bedroom: { cam: V(3.9, H1 + 1.6, 13.2), tgt: V(1.0, H1 + 0.9, 15.6), mode: 'all' },
-    lobby: { cam: V(9.6, H1 + 1.6, 6.8), tgt: V(5.2, H1 + 1.1, 2.8), mode: 'all' },
-    garage: { cam: V(9.9, 2.6, 0.6), tgt: V(5.6, 1.2, 7.2), mode: 'all' },
+    rear: { cam: V(15, 6.5, 29), tgt: V(5.2, 3.4, 12), mode: 'all' },
+    terrace: { cam: V(10.0, H1 + 1.6, 0.5), tgt: V(2.0, H1 + 1.2, 1.9), mode: 'all' },
+    upper: { cam: V(5.2, 23, -1.5), tgt: V(5.2, H1, 6.6), mode: 'upper' },
+    ground: { cam: V(5.2, 21, -1.5), tgt: V(5.2, 0, 6.4), mode: 'ground' },
+    living: { cam: V(4.6, H1 + 1.55, 5.9), tgt: V(1.2, H1 + 1.05, 2.8), mode: 'all' },
+    kitchen: { cam: V(4.6, H1 + 1.6, 2.7), tgt: V(8.6, H1 + 1.0, 5.6), mode: 'all' },
+    bedroom: { cam: V(4.1, H1 + 1.6, 10.9), tgt: V(1.0, H1 + 0.9, 13.3), mode: 'all' },
+    lobby: { cam: V(4.3, H1 + 1.6, 10.2), tgt: V(4.6, H1 + 1.1, 6.0), mode: 'all' },
+    garage: { cam: V(5.9, 2.5, 0.45), tgt: V(8.5, 0.9, 7.0), mode: 'all' },
   };
   let showLabels = false;
   let showNeighbours = true;
