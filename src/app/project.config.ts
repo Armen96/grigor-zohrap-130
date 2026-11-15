@@ -141,21 +141,33 @@ export const PROJECT = {
           detail: 'across the back, onto the terrace; living 3.55–4.30 m, kitchen 3.20 m deep',
         },
         {
-          label: 'Bedrooms (2)',
-          value: '14.5 + 13.0 m²',
-          detail: '3.92 × 3.70 and 3.51 × 3.70 m clear; street side',
+          label: 'Master bedroom',
+          value: '≈ 15.4 m²',
+          detail: '4.32 × 4.20 m clear less the en-suite corner; street side',
         },
         {
-          label: 'Bath',
-          value: '2.70 × 3.80 m',
-          detail: 'tub, shower, washing machine; roof light',
+          label: 'En-suite',
+          value: '2.85 × 2.00 m',
+          detail: 'shower, WC, vanity; door from the master bedroom; roof light',
         },
-        { label: 'Corridor', value: '2.35 m', detail: 'clear width; the stair door opens onto it' },
-        { label: 'Hall', value: '2.15 m', detail: 'clear depth; wardrobe along the bedroom wall' },
+        {
+          label: 'Bedroom 2',
+          value: '≈ 13.1 m²',
+          detail: '3.11 × 4.20 m clear; street side',
+        },
+        {
+          label: 'Main bath',
+          value: '2.85 × 2.05 m',
+          detail:
+            'tub with shower, vanity, WC, washing machine; door from the corridor; roof light',
+        },
+        { label: 'Corridor', value: '2.20 m', detail: 'clear width; the stair door opens onto it' },
+        { label: 'Hall', value: '1.65 m', detail: 'clear depth; wardrobe along the bedroom wall' },
         {
           label: 'Work room',
-          value: '≈ 8.7 m²',
-          detail: '2.25–2.45 × 3.70 m clear; street window; door from the hall',
+          value: '≈ 13.7 m²',
+          detail:
+            '2.15–2.45 × 6.00 m clear, back to the stair wall; street window; door from the hall',
         },
       ],
     },
@@ -174,7 +186,7 @@ export const PROJECT = {
     {
       title: 'Skylights',
       body:
-        'Stair, bath, hall and dining area get roof lights, since side windows are not ' +
+        'Stair, both baths, hall and dining area get roof lights, since side windows are not ' +
         'possible.',
       source: 'Illustrated floor plans and 3D model',
     },
@@ -198,7 +210,7 @@ export const PROJECT = {
   toVerify: [
     'Coverage: only 40% of the land may be built on. 40% of 385.05 m² (ownership certificate) = 154.0 m². At 14.70 m deep the footprint is 152.9 m² (39.7%); Revision 05 at 17.00 m was 176.8 m² (45.9%).',
     'Confirm with the municipality which area counts (ground footprint, or also the 2.00 m back terrace over the rear storage) and whether a surveyed area replaces 385.05 m².',
-    'Width check upstairs at the street: 0.30 + 3.92 + 0.15 + 3.51 + 0.15 + 2.47 + 0.30 = 10.80 m (work room 2.45 m clear inside the street wall). Ground floor at the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
+    'Width check upstairs at the street: 0.30 + 4.32 + 0.15 + 3.11 + 0.15 + 2.47 + 0.30 = 10.80 m (work room 2.45 m clear inside the street wall). Ground floor at the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
     'The new enclosure is conceptual: verify roof, structural support, headroom, ventilation and fire separation from the garage and storage.',
     'Tape measurement only: which boundary angles, boundary clearances and planning approval must be confirmed against the cadastral survey.',
   ] as readonly string[],
