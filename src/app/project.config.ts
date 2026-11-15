@@ -1,10 +1,10 @@
 /**
  * Central project content.
  *
- * Every dimension and area below is copied from the Revision 06 plan sheet
- * (public/docs/revision-06-plans.pdf, 4 Nov 2026), which is the source of
- * truth. Revision 06 shortens Revision 05 from 17.00 m to 14.70 m deep so the
- * footprint stays under the 40% site-coverage limit. Do not add a figure that is not
+ * Every dimension and area below is copied from the Revision 07 plan sheet
+ * (public/docs/revision-07-plans.pdf, 15 Nov 2026), which is the source of
+ * truth. Revision 06 shortened the building to 14.70 m deep for the 40% site-coverage
+ * limit; Revision 07 reworks the upper floor (bedrooms at the street, back terrace). Do not add a figure that is not
  * on that sheet. Where a value comes
  * from another document, `source` says which.
  */
@@ -67,8 +67,8 @@ export interface ContactConfig {
 export const PROJECT = {
   name: 'ZOHRAP 130',
   title: 'House over storage',
-  revision: 'Revision 06',
-  revisionDate: '4 Nov 2026',
+  revision: 'Revision 07',
+  revisionDate: '15 Nov 2026',
   address: 'G. Zohrap St. 130, Ajapnyak, Yerevan',
 
   summary:
@@ -137,15 +137,15 @@ export const PROJECT = {
       facts: [
         {
           label: 'Living',
-          value: '≈ 17.7 m²',
+          value: '≈ 18.7 m²',
           detail:
-            '5.20 × 3.40 m clear; door + window onto the back terrace; wall for the air conditioner',
+            '5.20 × 3.60 m clear; door + window onto the back terrace; wall for the air conditioner',
         },
         {
           label: 'Kitchen / dining',
-          value: '≈ 14.7 m²',
+          value: '≈ 15.6 m²',
           detail:
-            '4.25–4.40 × 3.40 m clear; own wall and door from the living; window onto the terrace',
+            '4.23–4.42 × 3.60 m clear; own wall and door from the living; window onto the terrace',
         },
         {
           label: 'Master bedroom',
@@ -154,7 +154,7 @@ export const PROJECT = {
         },
         {
           label: 'En-suite',
-          value: '2.85 × 1.80 m',
+          value: '2.85 × 1.70 m',
           detail: 'shower, WC, vanity; door from the master bedroom; roof light',
         },
         {
@@ -165,7 +165,7 @@ export const PROJECT = {
         },
         {
           label: 'Main bath',
-          value: '2.85 × 2.45 m',
+          value: '2.85 × 2.35 m',
           detail:
             'tub with shower, vanity, WC, washing machine; door from the corridor; roof light',
         },
@@ -241,20 +241,20 @@ export const PROJECT = {
 
   planSheets: [
     {
-      id: 'revision-06',
-      title: 'Revision 06 plan sheet',
+      id: 'revision-07',
+      title: 'Revision 07 plan sheet',
       caption: 'Source of truth for every dimension and area. Front at bottom, garden at top.',
-      image: '/images/plans/revision-06.webp',
-      preview: '/images/plans/revision-06-1200.webp',
+      image: '/images/plans/revision-07.webp',
+      preview: '/images/plans/revision-07-1200.webp',
       width: 2400,
       height: 1920,
-      pdf: '/docs/revision-06-plans.pdf',
+      pdf: '/docs/revision-07-plans.pdf',
     },
     {
       id: 'illustrated',
       title: 'Illustrated floor plans',
       caption:
-        'Top-down render of the Revision 06 model, 14.70 m deep for the 40% limit, with an area schedule. Furniture and finishes are illustrative.',
+        'Top-down render of the Revision 07 model, 14.70 m deep for the 40% limit, with an area schedule. Furniture and finishes are illustrative.',
       image: '/images/plans/floor-plans-illustrated.webp',
       preview: '/images/plans/floor-plans-illustrated-1200.webp',
       width: 3000,
@@ -265,23 +265,23 @@ export const PROJECT = {
 
   documents: [
     {
-      title: 'Revision 06 plan sheet',
+      title: 'Revision 07 plan sheet',
       description:
-        'Both floors at 14.70 m deep for the 40% coverage limit, area check and design basis. 4 Nov 2026.',
-      href: '/docs/revision-06-plans.pdf',
-      meta: 'PDF · 183 KB',
+        'Both floors at 14.70 m deep for the 40% coverage limit, bedrooms at the street and a back terrace; area check and design basis. 15 Nov 2026.',
+      href: '/docs/revision-07-plans.pdf',
+      meta: 'PDF · 178 KB',
     },
     {
       title: 'Illustrated floor plans',
       description: 'Furnished plan render with area schedule and design notes.',
       href: '/docs/floor-plans-illustrated.pdf',
-      meta: 'PDF · 2.1 MB',
+      meta: 'PDF · 0.6 MB',
     },
     {
       title: '3D concept model',
       description: 'The model above as a single standalone page. Needs an internet connection.',
       href: '/docs/house-over-warehouse-3d.html',
-      meta: 'HTML · 56 KB',
+      meta: 'HTML · 76 KB',
     },
     {
       title: 'Ownership certificate',
@@ -306,9 +306,9 @@ export const PROJECT = {
   } as ContactConfig,
 
   whatsappMessage:
-    'Hello, I am reviewing the House over storage concept (Revision 06) for G. Zohrap 130.',
+    'Hello, I am reviewing the House over storage concept (Revision 07) for G. Zohrap 130.',
 
-  emailSubject: 'House over storage, Revision 06',
+  emailSubject: 'House over storage, Revision 07',
 
   year: 2026,
 } as const;

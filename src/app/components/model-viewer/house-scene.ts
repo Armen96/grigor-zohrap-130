@@ -626,11 +626,11 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   const BLD: Point[] = toRight(0, 0, D, 0);
 
   /* Key lines along the depth (z), shared by both floors. */
-  // Upstairs the stair enclosure sits 0.20 m nearer the street than the flights need, which
-  // leaves 0.20 m (not 0.40 m) behind flight 2 and gives the living + kitchen 0.20 m more depth.
+  // Upstairs the stair | kitchen wall stands right at the end of flight 2 (nothing left behind it),
+  // which gives the living + kitchen 0.40 m more depth than the flights' own line.
   const Z_GARAGE = 6.1; // upstairs: hall | stair wall
   const Z_STAIR0 = Z_GARAGE + 0.15; // upstairs: stair enclosure starts
-  const Z_STAIR1 = Z_STAIR0 + 2.6; // upstairs: stair | kitchen wall
+  const Z_STAIR1 = Z_STAIR0 + 2.4; // upstairs: stair | kitchen wall, at the end of flight 2
   const Z_HALL = Z_STAIR1 + 0.15; // kitchen starts
   const Z_FLIGHT = 9.05; // the flights, fixed by the ground floor: flight 2 ends 0.40 m before this
   const Z_GAR2 = 11.2; // ground: storage pallets run to here
@@ -657,11 +657,11 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   const Z_BED = 4.3; // bedrooms | hall wall (bedrooms 4.00 m deep)
   const ZB = Z_BED + 0.15; // hall starts (hall 1.65 m deep up to the stair wall)
   const Z_EN0 = Z_BED; // master | en-suite: the master's back wall stays in line with bedroom 2's
-  const Z_EN1 = Z_EN0 + 0.15 + 1.8; // en-suite | main bath wall (en-suite 2.85 × 1.80)
+  const Z_EN1 = Z_EN0 + 0.15 + 1.7; // en-suite | main bath wall (en-suite 2.85 × 1.70)
   // One straight front wall for living + kitchen, in line with the stair | kitchen wall; the
   // baths and the corridor run back to it.
   const Z_LD = Z_STAIR1; // baths / corridor | living wall, with the living door
-  const Z_B1 = Z_LD; // main bath ends here (main bath 2.85 × 2.45)
+  const Z_B1 = Z_LD; // main bath ends here (main bath 2.85 × 2.35)
   const Z_TER = 2.0; // back terrace depth
   const Z_RW1 = D - Z_TER; // outer face of the upper rear wall
   const Z_RW0 = Z_RW1 - 0.3; // inner face of the upper rear wall
@@ -1130,7 +1130,6 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   slab(toRight(X_SUITE, Z_FW, Z_GARAGE, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false; // bedroom 2 + wardrobe
   box(X_COR0, XS, fl, fl + 0.02, Z_GARAGE, ZM, M.oak, u, { cast: false }); // corridor + stair landing
   box(XS, XL, fl, fl + 0.02, Z_STAIR0, F2[0], M.oak, u, { cast: false }); // landing beside flight 1
-  box(XS, XR(ZM) - 0.3, fl, fl + 0.02, F2[1], ZM, M.oak, u, { cast: false }); // strip behind flight 2
   slab(toRight(0.3, ZM, Z_RW0, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false; // living + kitchen
   box(0.3, X_BATH, fl, fl + 0.03, Z_EN0 + 0.15, Z_B1, M.tile, u, { cast: false }); // both baths
   // side walls (blind)
@@ -1230,10 +1229,6 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   box(XS, XL, fl + 0.97, fl + 1.0, F2[0] - 0.03, F2[0] + 0.03, M.oakFurn, u);
   box(XL - 0.015, XL + 0.015, fl, fl + 1.0, Z_STAIR0, F2[0], M.glassRail, u, { cast: false });
   box(XL - 0.03, XL + 0.03, fl + 0.97, fl + 1.0, Z_STAIR0, F2[0], M.oakFurn, u);
-  box(XS, XR(F2[1]) - 0.3, fl, fl + 1.0, F2[1] - 0.015, F2[1] + 0.015, M.glassRail, u, {
-    cast: false,
-  });
-  box(XS, XR(F2[1]) - 0.3, fl + 0.97, fl + 1.0, F2[1] - 0.03, F2[1] + 0.03, M.oakFurn, u);
 
   // service shaft between the baths: vent grilles into both, access panel from the corridor
   shaftWalls(fl, H2, u);
@@ -1247,7 +1242,7 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   /* upper furniture */
   const f = G.upperFurn;
   const F = fl + 0.02;
-  // living (5.2 × 3.4): media unit on the party wall, sofa facing it, clear of the door
+  // living (5.2 × 3.6): media unit on the party wall, sofa facing it, clear of the door
   const ZL = Z_LD + 0.15; // living starts
   box(0.9, 3.4, F, F + 0.01, ZL + 0.3, ZL + 2.9, M.rug, f, { cast: false });
   box(2.6, 3.5, F, F + 0.42, ZL + 0.4, ZL + 2.8, M.sofa, f); // sofa
@@ -1306,17 +1301,17 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   });
   cyl(DX + 0.45, H2 - 0.9, H2, (DZ0 + DZ1) / 2, 0.004, M.black, f, 4);
   cyl(DX + 0.45, H2 - 1.12, H2 - 0.9, (DZ0 + DZ1) / 2, 0.04, M.lampOn, f, 20, 0.22);
-  // en-suite (2.85 × 1.80): walk-in shower, WC, vanity
+  // en-suite (2.85 × 1.70): walk-in shower, WC, vanity
   const E0 = Z_EN0 + 0.15;
-  box(0.3, 1.3, F, F + 0.03, Z_EN1 - 0.95, Z_EN1, M.white, f, { cast: false }); // shower tray
-  box(1.3, 1.32, F, F + 2.0, Z_EN1 - 0.95, Z_EN1 - 0.25, M.glassRail, f, { cast: false });
+  box(0.3, 1.3, F, F + 0.03, Z_EN1 - 0.9, Z_EN1, M.white, f, { cast: false }); // shower tray
+  box(1.3, 1.32, F, F + 2.0, Z_EN1 - 0.9, Z_EN1 - 0.25, M.glassRail, f, { cast: false });
   cyl(0.8, F + 1.9, F + 1.95, Z_EN1 - 0.45, 0.12, M.chrome, f, 16);
-  box(0.3, 0.9, F, F + 0.42, E0 + 0.25, E0 + 0.7, M.white, f); // WC
-  box(0.3, 0.45, F + 0.42, F + 0.8, E0 + 0.25, E0 + 0.7, M.white, f);
+  box(0.3, 0.9, F, F + 0.42, E0 + 0.2, E0 + 0.65, M.white, f); // WC
+  box(0.3, 0.45, F + 0.42, F + 0.8, E0 + 0.2, E0 + 0.65, M.white, f);
   box(X_BATH - 0.5, X_BATH, F + 0.5, F + 0.85, E0 + 0.45, E0 + 1.4, M.oakFurn, f); // vanity
   box(X_BATH - 0.45, X_BATH - 0.05, F + 0.85, F + 0.9, E0 + 0.68, E0 + 1.18, M.white, f);
   box(X_BATH - 0.02, X_BATH, F + 1.1, F + 1.9, E0 + 0.45, E0 + 1.4, M.chrome, f); // mirror
-  // main bath (2.85 × 2.45): tub with shower, vanity, WC, washing machine
+  // main bath (2.85 × 2.35): tub with shower, vanity, WC, washing machine
   const B0 = Z_EN1 + 0.15;
   box(0.3, 2.0, F, F + 0.55, Z_B1 - 0.75, Z_B1, M.white, f); // bathtub
   box(0.4, 1.9, F + 0.5, F + 0.56, Z_B1 - 0.67, Z_B1 - 0.08, M.glass, f, { cast: false });
@@ -1656,14 +1651,14 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
       ['L-stair', '1.1–1.4 wide, turns left', 9.3, 2.2, 6.5, 'ground'],
       ['Back terrace', '10.1 → 10.0 × 2.0', 4.6, H1 + 0.4, 13.7, 'upper'],
       ['Roof ladder', 'from the terrace', 9.6, H1 + 0.4, 13.1, 'upper'],
-      ['Living', '5.2 × 3.4', 2.0, H1 + 0.4, 11.0, 'upper'],
-      ['Kitchen / dining', '4.25–4.4 × 3.4, own door', 8.6, H1 + 0.4, 11.6, 'upper'],
+      ['Living', '5.2 × 3.6 ≈ 18.7 m²', 2.0, H1 + 0.4, 11.0, 'upper'],
+      ['Kitchen / dining', '4.2–4.4 × 3.6 ≈ 15.6 m², own door', 8.6, H1 + 0.4, 11.6, 'upper'],
       ['Stair door', 'stair closed off', 6.1, H1 + 0.4, 8.5, 'upper'],
       ['Service shaft', '0.4 × 1.0, vents both baths', 2.65, H1 + 0.4, 6.2, 'upper'],
       ['Stair shaft', '0.4 × 0.5, roof → upper floor', 5.85, H1 + 0.4, 6.45, 'upper'],
       ['Corridor', '2.20 m wide', 4.3, H1 + 0.4, 7.3, 'upper'],
-      ['Bath', '2.85 × 2.45, tub + shower', 1.65, H1 + 0.4, 7.6, 'upper'],
-      ['En-suite', '2.85 × 1.8, shower', 1.65, H1 + 0.4, 5.3, 'upper'],
+      ['Bath', '2.85 × 2.35, tub + shower', 1.65, H1 + 0.4, 7.5, 'upper'],
+      ['En-suite', '2.85 × 1.7, shower', 1.65, H1 + 0.4, 5.25, 'upper'],
       ['Hall', '4.0 × 1.65, straight', 5.0, H1 + 0.4, 5.3, 'upper'],
       ['Master bedroom', '4.0 × 4.0 = 16.0 m²', 2.3, H1 + 0.4, 2.0, 'upper'],
       ['Work room', '2.88 × 4.0 ≈ 11.5 m²', 5.9, H1 + 0.4, 1.8, 'upper'],
