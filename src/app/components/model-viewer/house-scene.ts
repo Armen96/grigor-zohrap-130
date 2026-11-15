@@ -1215,10 +1215,6 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
   cyl((X_COR0 + X_COR1) / 2, H2 - 0.06, H2, 7.0, 0.18, M.lampOn, f, 24);
   // stair landing: shoe cabinet beside flight 1
   box(XS + 0.2, XL - 0.2, F, F + 0.9, Z_STAIR0, Z_STAIR0 + 0.4, M.oakFurn, f);
-  // hall: wardrobe on the bedroom wall, clear of the bedroom 2 and work-room doors
-  box(6.0, X_WORK - 0.15, F, H2 - 0.05, ZB, ZB + 0.6, M.oakFurn, f);
-  for (let x = 6.47; x < X_WORK - 0.2; x += 0.47)
-    box(x - 0.005, x + 0.005, F + 0.05, H2 - 0.08, ZB + 0.6, ZB + 0.61, M.walnut, f);
   // work room: desk under the street window, shelving on the bedroom wall, sofa further back
   const zDesk0 = Z_FW + 0.05;
   const zDesk1 = zDesk0 + 0.7;
@@ -1429,7 +1425,7 @@ export function createHouseScene(stage: HTMLElement, labelLayer: HTMLElement): H
       ['Corridor', '2.20 m wide', 4.3, H1 + 0.4, 7.3, 'upper'],
       ['Bath', '2.85 × 2.05, tub + shower', 1.65, H1 + 0.4, 6.9, 'upper'],
       ['En-suite', '2.85 × 2.0, shower', 1.65, H1 + 0.4, 4.7, 'upper'],
-      ['Hall', '1.65 m deep, wardrobe', 5.0, H1 + 0.4, 5.5, 'upper'],
+      ['Hall', '1.65 m deep', 5.0, H1 + 0.4, 5.5, 'upper'],
       ['Master bedroom', '4.32 × 4.2 ≈ 15.4 m²', 2.3, H1 + 0.4, 2.0, 'upper'],
       ['Bedroom', '3.11 × 4.2 ≈ 13.1 m²', 6.3, H1 + 0.4, 2.0, 'upper'],
       ['Work room', '2.15–2.45 × 6.0 ≈ 13.7 m²', 9.2, H1 + 0.4, 2.3, 'upper'],

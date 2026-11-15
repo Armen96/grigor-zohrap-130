@@ -162,7 +162,7 @@ export const PROJECT = {
             'tub with shower, vanity, WC, washing machine; door from the corridor; roof light',
         },
         { label: 'Corridor', value: '2.20 m', detail: 'clear width; the stair door opens onto it' },
-        { label: 'Hall', value: '1.65 m', detail: 'clear depth; wardrobe along the bedroom wall' },
+        { label: 'Hall', value: '1.65 m', detail: 'clear depth' },
         {
           label: 'Work room',
           value: '≈ 13.7 m²',
