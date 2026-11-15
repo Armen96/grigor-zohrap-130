@@ -149,8 +149,8 @@ export const PROJECT = {
         },
         {
           label: 'Master bedroom',
-          value: '≈ 17.3 m²',
-          detail: '4.32 × 4.00 m clear; street side',
+          value: '16.0 m²',
+          detail: '4.00 × 4.00 m clear; street side',
         },
         {
           label: 'En-suite',
@@ -159,9 +159,9 @@ export const PROJECT = {
         },
         {
           label: 'Bedroom 2',
-          value: '≈ 17.8 m²',
+          value: '≈ 16.5 m²',
           detail:
-            '3.00–3.23 × 5.80 m clear, one open room: sleeping area at the street, open dressing area at the back; door from the hall',
+            '2.69–3.00 × 5.80 m clear, one open room: sleeping area at the street, open dressing area at the back; door from the hall',
         },
         {
           label: 'Main bath',
@@ -170,11 +170,11 @@ export const PROJECT = {
             'tub with shower, vanity, WC, washing machine; door from the corridor; roof light',
         },
         { label: 'Corridor', value: '2.20 m', detail: 'clear width; the stair door opens onto it' },
-        { label: 'Hall', value: '1.65 m', detail: 'clear depth' },
+        { label: 'Hall', value: '1.65 m', detail: 'clear depth; one straight 4.03 m strip' },
         {
           label: 'Work room',
-          value: '≈ 7.5 m²',
-          detail: '2.33 × 3.20 m clear; between the bedrooms; street window; door from the hall',
+          value: '≈ 11.5 m²',
+          detail: '2.88 × 4.00 m clear; between the bedrooms; street window; door from the hall',
         },
       ],
     },
@@ -234,7 +234,7 @@ export const PROJECT = {
   toVerify: [
     'Coverage: only 40% of the land may be built on. 40% of 385.05 m² (ownership certificate) = 154.0 m². At 14.70 m deep the footprint is 152.9 m² (39.7%); Revision 05 at 17.00 m was 176.8 m² (45.9%).',
     'Confirm with the municipality which area counts (ground footprint, or also the 2.00 m back terrace over the rear storage) and whether a surveyed area replaces 385.05 m².',
-    'Width check upstairs at the street: 0.30 + 4.32 + 0.15 + 2.33 + 0.15 + 3.25 + 0.30 = 10.80 m (bedroom 2 3.23 m clear inside the street wall). Ground floor at the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
+    'Width check upstairs at the street: 0.30 + 4.00 + 0.15 + 2.88 + 0.15 + 3.02 + 0.30 = 10.80 m (bedroom 2 3.00 m clear inside the street wall). Ground floor at the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
     'The new enclosure is conceptual: verify roof, structural support, headroom, ventilation and fire separation from the garage and storage.',
     'Tape measurement only: which boundary angles, boundary clearances and planning approval must be confirmed against the cadastral survey.',
   ] as readonly string[],
