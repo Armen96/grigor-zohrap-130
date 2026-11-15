@@ -103,9 +103,9 @@ export const PROJECT = {
           detail: 'clear; front wing 4.47 m wide, rear storage 5.45 m deep',
         },
         {
-          label: 'WC',
-          value: '1.35 × 1.55 m',
-          detail: 'rear-left corner of the garage; door from the rear storage',
+          label: 'Shower room',
+          value: '1.35 × 2.00 m',
+          detail: 'WC, basin, shower; rear-left corner of the garage; door from the rear storage',
         },
         {
           label: 'Private garage',
@@ -136,28 +136,36 @@ export const PROJECT = {
       title: 'Rooms',
       facts: [
         {
-          label: 'Living + kitchen / dining',
-          value: '≈ 35 m²',
-          detail: 'across the back, onto the terrace; living 3.55–4.30 m, kitchen 3.20 m deep',
+          label: 'Living',
+          value: '≈ 17.7 m²',
+          detail:
+            '5.20 × 3.40 m clear; door + window onto the back terrace; wall for the air conditioner',
+        },
+        {
+          label: 'Kitchen / dining',
+          value: '≈ 14.7 m²',
+          detail:
+            '4.25–4.40 × 3.40 m clear; own wall and door from the living; window onto the terrace',
         },
         {
           label: 'Master bedroom',
-          value: '≈ 15.4 m²',
-          detail: '4.32 × 4.20 m clear less the en-suite corner; street side',
+          value: '≈ 17.3 m²',
+          detail: '4.32 × 4.00 m clear; street side',
         },
         {
           label: 'En-suite',
-          value: '2.85 × 2.00 m',
+          value: '2.85 × 1.80 m',
           detail: 'shower, WC, vanity; door from the master bedroom; roof light',
         },
         {
           label: 'Bedroom 2',
-          value: '≈ 13.1 m²',
-          detail: '3.11 × 4.20 m clear; street side',
+          value: '≈ 17.8 m²',
+          detail:
+            '3.00–3.23 × 5.80 m clear, one open room: sleeping area at the street, open dressing area at the back; door from the hall',
         },
         {
           label: 'Main bath',
-          value: '2.85 × 2.05 m',
+          value: '2.85 × 2.45 m',
           detail:
             'tub with shower, vanity, WC, washing machine; door from the corridor; roof light',
         },
@@ -165,9 +173,8 @@ export const PROJECT = {
         { label: 'Hall', value: '1.65 m', detail: 'clear depth' },
         {
           label: 'Work room',
-          value: '≈ 13.7 m²',
-          detail:
-            '2.15–2.45 × 6.00 m clear, back to the stair wall; street window; door from the hall',
+          value: '≈ 7.5 m²',
+          detail: '2.33 × 3.20 m clear; between the bedrooms; street window; door from the hall',
         },
       ],
     },
@@ -184,10 +191,11 @@ export const PROJECT = {
         'the street and garden sides only.',
     },
     {
-      title: 'Skylights',
+      title: 'Roof lights and solar panels',
       body:
-        'Stair, both baths, hall and dining area get roof lights, since side windows are not ' +
-        'possible.',
+        'The stair and the corridor get one roof light each, since side windows are not ' +
+        'possible. The rest of the roof takes the solar panels (shown for demonstration), ' +
+        'whose cables come down the service shaft.',
       source: 'Illustrated floor plans and 3D model',
     },
     {
@@ -196,6 +204,22 @@ export const PROJECT = {
         'Garage (pass door in the garage door) → L-stair (inside the garage, turns left) → stair ' +
         'door → corridor → living and kitchen at the back; bedrooms at the front through the ' +
         'hall. No access to the house through the storage.',
+    },
+    {
+      title: 'Service shaft between the baths',
+      body:
+        '0.40 × 1.00 m, from the upper floor to a vented cap on the roof, between the en-suite ' +
+        'and the main bath. It vents both baths and carries cables, including the roof solar ' +
+        'panel cables. Below the upper floor only a duct and a cable tray continue, under the ' +
+        'storage ceiling, to the storage shower room and the garage panel / inverter. A ' +
+        'second shaft, 0.40 × 0.50 m, runs from the roof to the upper floor only, in the ' +
+        'corner of the stair enclosure.',
+    },
+    {
+      title: 'Garden door from the rear storage',
+      body:
+        'A door at the right end of the ground-floor rear wall opens to the garden, under the ' +
+        'garden-stair landing.',
     },
     {
       title: 'Provisional garden stair',
@@ -210,7 +234,7 @@ export const PROJECT = {
   toVerify: [
     'Coverage: only 40% of the land may be built on. 40% of 385.05 m² (ownership certificate) = 154.0 m². At 14.70 m deep the footprint is 152.9 m² (39.7%); Revision 05 at 17.00 m was 176.8 m² (45.9%).',
     'Confirm with the municipality which area counts (ground footprint, or also the 2.00 m back terrace over the rear storage) and whether a surveyed area replaces 385.05 m².',
-    'Width check upstairs at the street: 0.30 + 4.32 + 0.15 + 3.11 + 0.15 + 2.47 + 0.30 = 10.80 m (work room 2.45 m clear inside the street wall). Ground floor at the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
+    'Width check upstairs at the street: 0.30 + 4.32 + 0.15 + 2.33 + 0.15 + 3.25 + 0.30 = 10.80 m (bedroom 2 3.23 m clear inside the street wall). Ground floor at the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
     'The new enclosure is conceptual: verify roof, structural support, headroom, ventilation and fire separation from the garage and storage.',
     'Tape measurement only: which boundary angles, boundary clearances and planning approval must be confirmed against the cadastral survey.',
   ] as readonly string[],

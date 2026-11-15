@@ -87,12 +87,13 @@ button:focus-visible{outline:2px solid var(--ui-active);outline-offset:2px}
     <ul>
       <li>Plot: left boundary straight, right boundary angles inward (10.80 m at the street, 10.00 m at the rear wall). Both side walls are party walls on the boundary.</li>
       <li>Footprint: 152.9 m² = 39.7% of 385.05 m², under the 40% limit. Revision 05 was 17 m deep (176.8 m², 45.9%).</li>
-      <li>Ground: storage (≈ 91 m² clear) with its own 1.35 × 1.55 m WC in the rear-left corner of the garage, door from the rear storage; a private garage 5.1 × 8.5 m clear (widening to 5.56 m at the street) for two cars side by side behind a 4.8 m garage door with a pass door. Behind the cars the garage stays empty, with a 2.4 m wide space between the WC and the L-stair (up the right wall, turns left).</li>
-      <li>Street side upstairs: a 15.4 m² master bedroom (4.32 × 4.2, less the en-suite corner) with its own 2.85 × 2.0 m en-suite shower room, a 13.1 m² bedroom (3.11 × 4.2), and a 13.7 m² work room (2.15–2.45 × 6.0) that runs back to the stair wall. All have street windows.</li>
+      <li>Ground: storage (≈ 91 m² clear) with its own 1.35 × 2.0 m shower room (WC, basin, shower) in the rear-left corner of the garage, door from the rear storage; a private garage 5.1 × 8.5 m clear (widening to 5.56 m at the street) for two cars side by side behind a 4.8 m garage door with a pass door. Behind the cars the garage stays empty, with a 2.4 m wide space between the WC and the L-stair (up the right wall, turns left). A door at the right end of the ground-floor rear wall leads from the rear storage to the garden, sheltered by the garden-stair landing above it.</li>
+      <li>Street side upstairs: a 17.3 m² master bedroom (4.32 × 4.0) with its own 2.85 × 1.8 m en-suite shower room behind it, a 7.5 m² work room (2.33 × 3.2) in the middle, and on the right a second bedroom that is one open 3.0–3.2 × 5.8 m room (≈ 17.8 m²): the sleeping area at the street window and an open dressing area at the back by the stair wall, with no wall or door between them. Behind the work room the hall widens, and the bedroom door opens from there straight into the sleeping area. All three rooms have street windows.</li>
       <li>Arrival: the stair ends at its own door; the stair stays closed off from the house. The door opens onto a 2.20 m corridor between hall and living.</li>
-      <li>Middle: hall (1.65 m deep), main bath (2.85 × 2.05, tub with shower, vanity, WC, washing machine) off the corridor, and the corridor.</li>
-      <li>Garden side: living room and kitchen/dining across the full width, both opening onto the 10.1 × 2 m back terrace. The stair, fixed by the ground floor, sits in front of the kitchen, so the kitchen is 3.2 m deep; the living room is 3.55–4.3 m deep. The provisional garden stair starts from the terrace.</li>
-      <li>Roof lights over the stair, both baths, hall and dining area bring daylight into the middle of the house, since the side walls cannot have windows.</li>
+      <li>Service shaft: 0.4 × 1.0 m, between the en-suite and the main bath on the corridor side, from the upper floor to a vented cap on the roof. It vents both baths and carries cables, including the roof solar panel cables, with an access panel from the corridor. Below the upper floor there is no shaft: a vent duct and a cable tray run under the storage ceiling, the duct to the storage shower room and the tray through the wall to the electrical panel / solar inverter in the garage. A second, smaller shaft (0.4 × 0.5 m) runs from the roof down to the upper floor only, in the corner of the stair enclosure beside the stair door, with an access panel facing the landing.</li>
+      <li>Middle: hall (1.65 m deep), main bath (2.85 × 2.45, tub with shower, vanity, WC, washing machine) off the corridor, and the corridor. The baths and the corridor run back to the living wall.</li>
+      <li>Garden side: a 5.2 × 3.4 m living room with a glazed door and a window onto the 10.1 × 2 m back terrace, plus a solid stretch of wall for the air conditioner (outdoor unit on the terrace), and a separate 4.25–4.4 × 3.4 m kitchen/dining behind its own wall and door, with a 3.35 m window onto the terrace. Both windows start 0.4 m above the floor. Their front wall is one straight line, set 0.2 m into the space behind the stair, which is fixed by the ground floor. The provisional garden stair starts from the terrace. A simple vertical steel ladder on the rear wall, at the right end of the terrace, goes up to the roof.</li>
+      <li>Two roof lights, over the stair and the corridor, bring daylight into the middle of the house, since the side walls cannot have windows. Solar panels on the roof (18 panels, shown for demonstration) bring their cables down the service shaft.</li>
       <li>Floor-to-floor 3.5 m below, 2.9 m clear upstairs. Furniture and finishes are illustrative.</li>
     </ul>
   </details>
@@ -362,10 +363,13 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     }
     const BLD = toRight(0, 0, D, 0);
     /* Key lines along the depth (z), shared by both floors. */
-    const Z_GARAGE = 6.3; // upstairs: kitchen back wall
-    const Z_STAIR0 = Z_GARAGE + 0.15; // upstairs: middle zone starts
-    const Z_STAIR1 = Z_STAIR0 + 2.6; // upstairs: middle zone | hall
-    const Z_HALL = Z_STAIR1 + 0.15; // upper hall starts
+    // Upstairs the stair enclosure sits 0.20 m nearer the street than the flights need, which
+    // leaves 0.20 m (not 0.40 m) behind flight 2 and gives the living + kitchen 0.20 m more depth.
+    const Z_GARAGE = 6.1; // upstairs: hall | stair wall
+    const Z_STAIR0 = Z_GARAGE + 0.15; // upstairs: stair enclosure starts
+    const Z_STAIR1 = Z_STAIR0 + 2.6; // upstairs: stair | kitchen wall
+    const Z_HALL = Z_STAIR1 + 0.15; // kitchen starts
+    const Z_FLIGHT = 9.05; // the flights, fixed by the ground floor: flight 2 ends 0.40 m before this
     const Z_GAR2 = 11.2; // ground: storage pallets run to here
     const X_GW = 4.77; // ground: storage | garage wall (garage 5.10 m clear at its rear wall)
     // L-stair, open to the garage: flight 1 along the right wall rising toward the garden,
@@ -374,34 +378,60 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     const R = H1 / 18; // stair rise
     const XL = 8.8; // flight 1 and the corner landing run from here to the right wall
     const XS = XL - 8 * TR; // top of flight 2 (upstairs arrival)
-    const F2 = [Z_STAIR1 - 1.5, Z_STAIR1 - 0.4]; // flight 2 and the corner landing, in z
+    const F2 = [Z_FLIGHT - 1.5, Z_FLIGHT - 0.4]; // flight 2 and the corner landing, in z
     const Z_F1 = F2[0] - 8 * TR; // first riser of flight 1
     // Garage 5.10–5.56 × 8.50 m clear from the street to Z_SH: two cars side by side at the
     // front, free space behind them (wide enough to drive in between the WC and the stair), the
     // L-stair along the right wall and the storage WC in the rear-left corner.
-    const X_WC = X_GW + 0.15; // storage WC 1.35 × 1.55, door from the rear storage
+    const X_WC = X_GW + 0.15; // storage shower room 1.35 × 2.00, door from the rear storage
     const Z_SH = 0.3 + 8.5; // garage | rear storage wall
     const Z_WC1 = Z_SH;
-    const Z_WC0 = Z_WC1 - 1.55;
+    const Z_WC0 = Z_WC1 - 2.0;
     const Z_REAR = D - 0.3; // inner face of the ground-floor rear wall
     // Upper floor, Revision 07: bedrooms on the street side, living + kitchen at the back onto
     // a 2.00 m back terrace. The stair (fixed by the ground floor) stays in the middle.
     const Z_FW = 0.3; // inner face of the upper front wall (flush with the street facade)
-    const Z_BED = 4.5; // bedrooms | hall wall (bedrooms 4.20 m deep)
+    const Z_BED = 4.3; // bedrooms | hall wall (bedrooms 4.00 m deep)
     const ZB = Z_BED + 0.15; // hall starts (hall 1.65 m deep up to the stair wall)
-    const Z_EN0 = 3.6; // master bedroom | en-suite wall
-    const Z_EN1 = 5.75; // en-suite | main bath wall (en-suite 2.85 × 2.00)
-    const Z_B1 = 7.95; // main bath | living wall (main bath 2.85 × 2.05)
-    const Z_LIV = Z_B1 + 0.15; // living starts beside the bath
-    const Z_LD = 8.7; // corridor | living wall, with the living door (just past the stair door)
+    const Z_EN0 = Z_BED; // master | en-suite: the master's back wall stays in line with bedroom 2's
+    const Z_EN1 = Z_EN0 + 0.15 + 1.8; // en-suite | main bath wall (en-suite 2.85 × 1.80)
+    // One straight front wall for living + kitchen, in line with the stair | kitchen wall; the
+    // baths and the corridor run back to it.
+    const Z_LD = Z_STAIR1; // baths / corridor | living wall, with the living door
+    const Z_B1 = Z_LD; // main bath ends here (main bath 2.85 × 2.45)
     const Z_TER = 2.0; // back terrace depth
     const Z_RW1 = D - Z_TER; // outer face of the upper rear wall
     const Z_RW0 = Z_RW1 - 0.3; // inner face of the upper rear wall
     const X_BATH = 3.15; // baths | corridor wall: both baths 2.85 m wide
     const X_COR0 = X_BATH + 0.15; // corridor starts here
     const X_COR1 = 5.5; // corridor | stair wall, with the stair door
-    const X_B2 = 4.77; // master | bedroom 2 wall ends here (master 4.32 m wide)
-    const X_WORK = 8.03; // bedroom 2 | work room wall ends here (bedroom 2 3.11 × 4.20 = 13.1 m²)
+    const X_B2 = 4.77; // master | work room wall ends here (master 4.32 m wide)
+    // work room | bedroom 2 wall ends here. Bedroom 2 is one open room, 3.0–3.2 × 5.80 (≈ 17.8 m²),
+    // from the street back to the stair wall, with an open dressing area at the back.
+    const X_SUITE = 7.25;
+    const Z_WR = Z_FW + 3.2; // work room back wall (work room 2.33 × 3.20); the hall widens behind it
+    // Service shaft for ventilation and cables (roof solar panels): 0.40 × 1.00 m outside, between
+    // the en-suite and the main bath on the corridor side, venting both baths. It runs from the
+    // upper floor to the roof; below the upper slab, only a duct and a cable tray continue, under
+    // the storage ceiling, to the storage shower room and the garage panel.
+    const SH_X = [X_BATH - 1.0, X_BATH];
+    const SH_Z = [Z_EN1 + 0.15 - 0.4, Z_EN1 + 0.15];
+    const SH_T = 0.05; // shaft lining thickness (0.30 × 0.90 clear)
+    const shaftHole = rect(SH_X[0] + SH_T, SH_Z[0] + SH_T, SH_X[1] - SH_T, SH_Z[1] - SH_T);
+    // Second, smaller shaft 0.40 × 0.50 m outside, upper floor only: from the roof down into the
+    // corner of the stair enclosure beside the stair door landing.
+    const SH2_X = [X_COR1 + 0.1, X_COR1 + 0.6];
+    const SH2_Z = [Z_STAIR0, Z_STAIR0 + 0.4];
+    const shaft2Hole = rect(SH2_X[0] + SH_T, SH2_Z[0] + SH_T, SH2_X[1] - SH_T, SH2_Z[1] - SH_T);
+    /** A shaft's four walls between y0 and y1 (the bath shaft unless another is given). */
+    function shaftWalls(y0, y1, grp, sx = SH_X, sz = SH_Z) {
+        box(sx[0], sx[1], y0, y1, sz[0], sz[0] + SH_T, M.wallIn, grp);
+        box(sx[0], sx[1], y0, y1, sz[1] - SH_T, sz[1], M.wallIn, grp);
+        box(sx[0], sx[0] + SH_T, y0, y1, sz[0] + SH_T, sz[1] - SH_T, M.wallIn, grp);
+        box(sx[1] - SH_T, sx[1], y0, y1, sz[0] + SH_T, sz[1] - SH_T, M.wallIn, grp);
+    }
+    // Ground-floor garden door at the right of the rear wall, under the garden-stair landing.
+    const GD = [8.45, 9.35];
     /* ================= SITE ================= */
     box(-14, 25, -0.32, -0.12, -12, -2.6, M.asphalt, G.site, { cast: false });
     box(-14, 25, -0.12, 0, -2.6, -0.0, M.paving, G.site, { cast: false });
@@ -478,12 +508,36 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     wallX(0, XR(D), Z_REAR, D, 0, W1, [
         [0.9, 3.3, 2.0, 3.0],
         [4.6, 6.4, 2.0, 3.0],
-        [8.4, 9.2, 2.3, 2.9],
+        [GD[0], GD[1], 0, 2.2],
     ], M.plasterBase, g);
     const zg = Z_REAR + 0.15;
     glazeX(0.9, 3.3, zg, 2.0, 3.0, g, 2, 0.15);
     glazeX(4.6, 6.4, zg, 2.0, 3.0, g, 1, 0.15);
-    glazeX(8.4, 9.2, zg, 2.3, 2.9, g, 1, 0.15);
+    // garden door: frame, solid leaf, handle and an outside step
+    box(GD[0], GD[1], 2.15, 2.2, Z_REAR, D, M.alu, g);
+    box(GD[0], GD[0] + 0.05, 0, 2.2, Z_REAR, D, M.alu, g);
+    box(GD[1] - 0.05, GD[1], 0, 2.2, Z_REAR, D, M.alu, g);
+    box(GD[0] + 0.05, GD[1] - 0.05, 0, 2.15, zg - 0.03, zg + 0.03, M.walnut, g);
+    box(GD[1] - 0.17, GD[1] - 0.13, 0.95, 1.15, zg + 0.03, zg + 0.07, M.chrome, g);
+    box(GD[0] - 0.1, GD[1] + 0.1, 0, 0.03, D, D + 0.4, M.coping, g);
+    // Services below the shaft, no shaft here: a vent duct and a cable tray under the storage
+    // ceiling. The duct jogs along the garage wall into the shower room; the tray goes through the
+    // wall to the electrical panel / solar inverter on the garage side.
+    {
+        const yd0 = W1 - 0.32;
+        const yd1 = W1 - 0.08;
+        const xm = (SH_X[0] + SH_X[1]) / 2;
+        const zd = SH_Z[0] + 0.08;
+        box(xm - 0.12, X_GW - 0.05, yd0, yd1, zd, zd + 0.24, M.alu, g); // duct along x
+        box(X_GW - 0.3, X_GW - 0.05, yd0, yd1, zd, Z_WC0 + 0.6, M.alu, g); // duct along z, by the wall
+        box(X_GW - 0.05, X_WC + 0.1, yd0, yd1, Z_WC0 + 0.35, Z_WC0 + 0.6, M.alu, g); // into the shower room
+        box(X_WC + 0.1, X_WC + 0.12, yd0 + 0.02, yd1 - 0.02, Z_WC0 + 0.37, Z_WC0 + 0.58, M.black, g); // grille
+        const zt = zd - 0.3;
+        box(xm, xm + 0.2, W1 - 0.06, W1 - 0.03, zt, SH_Z[0] + 0.15, M.rackBeam, g); // from the shaft
+        box(xm, X_WC + 0.05, W1 - 0.06, W1 - 0.03, zt, zt + 0.2, M.rackBeam, g); // cable tray
+        box(X_WC + 0.02, X_WC + 0.05, 1.8, W1 - 0.03, zt, zt + 0.2, M.rackBeam, g); // down the garage wall
+        box(X_WC, X_WC + 0.2, 1.0, 1.8, zt - 0.25, zt + 0.45, M.white, g); // panel / inverter
+    }
     // storage | garage walls (fire-rated): a plain rectangle. The rear one has the WC door,
     // opening from the rear storage.
     box(X_GW, X_GW + 0.15, 0, W1, 0.3, Z_SH + 0.15, M.wallIn, g);
@@ -538,7 +592,7 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
         rail(XL - 0.05, 0.9, Z_F1, XL - 0.05, 9 * R + 0.9, F2[0]);
         rail(XL, 9 * R + 0.9, F2[0] - 0.05, XS, H1 + 0.9, F2[0] - 0.05);
     }
-    // storage WC 1.35 × 1.55 in the garage's rear-left corner, door in the rear wall
+    // storage shower room 1.35 × 2.00 in the garage's rear-left corner, door in the rear wall
     box(X_WC, X_WC + 1.5, 0, W1, Z_WC0 - 0.15, Z_WC0, M.wallIn, g);
     box(X_WC + 1.35, X_WC + 1.5, 0, W1, Z_WC0, Z_WC1, M.wallIn, g);
     /* ground furniture: car, racks, WC */
@@ -595,9 +649,13 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
         box(2.2, 3.3, 0, 0.15, z, z + 1.2, M.pallet, gf);
         box(2.25, 3.25, 0.15, 0.15 + rnd(0.4, 1), z + 0.05, z + 1.15, M.carton, gf);
     }
-    box(X_WC + 0.7, X_WC + 1.35, 0, 0.42, Z_WC0 + 0.05, Z_WC0 + 0.5, M.white, gf); // WC
-    box(X_WC + 1.2, X_WC + 1.35, 0.42, 0.8, Z_WC0 + 0.05, Z_WC0 + 0.5, M.white, gf);
-    box(X_WC, X_WC + 0.4, 0.8, 0.95, Z_WC0 + 0.4, Z_WC0 + 0.8, M.white, gf); // basin
+    // shower across the front, WC and basin behind it, by the door
+    box(X_WC, X_WC + 1.35, 0, 0.03, Z_WC0, Z_WC0 + 0.9, M.white, gf, { cast: false }); // shower tray
+    box(X_WC, X_WC + 0.85, 0, 2.0, Z_WC0 + 0.9, Z_WC0 + 0.92, M.glassRail, gf, { cast: false });
+    cyl(X_WC + 0.67, 1.95, 2.0, Z_WC0 + 0.45, 0.12, M.chrome, gf, 16);
+    box(X_WC + 0.7, X_WC + 1.35, 0, 0.42, Z_WC0 + 1.0, Z_WC0 + 1.45, M.white, gf); // WC
+    box(X_WC + 1.2, X_WC + 1.35, 0.42, 0.8, Z_WC0 + 1.0, Z_WC0 + 1.45, M.white, gf);
+    box(X_WC, X_WC + 0.4, 0.8, 0.95, Z_WC0 + 1.05, Z_WC0 + 1.45, M.white, gf); // basin
     /* ================= UPPER SLAB + TERRACE ================= */
     // the upstairs floor covers the corner beside flight 1; only the flights are open
     const stairHole = [
@@ -608,7 +666,7 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
         [XR(F2[1]) - 0.3, F2[1]],
         [XS, F2[1]],
     ];
-    slab(BLD, [stairHole], H1, SLAB, M.slab, G.slab);
+    slab(BLD, [stairHole, shaftHole], H1, SLAB, M.slab, G.slab);
     box(0, W_FRONT, W1 - 0.02, W1, 0, 0.02, M.coping, G.slab); // drip line
     // back terrace decking across the full width, over the rear storage
     slab(toRight(0.25, Z_RW1, D - 0.2, 0.25), [], H1 + 0.03, 0.03, M.deck, G.terrace).castShadow =
@@ -636,15 +694,15 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     {
         const t = G.terrace;
         const tf = H1 + 0.03;
-        // dining in front of the living room
-        box(1.0, 2.6, tf + 0.72, tf + 0.76, D - 1.55, D - 0.65, M.oakFurn, t);
-        box(1.05, 1.12, tf, tf + 0.72, D - 1.5, D - 0.7, M.oakFurn, t);
-        box(2.48, 2.55, tf, tf + 0.72, D - 1.5, D - 0.7, M.oakFurn, t);
+        // dining in front of the living room, clear of the air-conditioner outdoor unit
+        box(1.4, 3.0, tf + 0.72, tf + 0.76, D - 1.55, D - 0.65, M.oakFurn, t);
+        box(1.45, 1.52, tf, tf + 0.72, D - 1.5, D - 0.7, M.oakFurn, t);
+        box(2.88, 2.95, tf, tf + 0.72, D - 1.5, D - 0.7, M.oakFurn, t);
         [
-            [1.3, D - 0.45],
-            [2.1, D - 0.45],
-            [1.3, D - 1.75],
-            [2.1, D - 1.75],
+            [1.7, D - 0.45],
+            [2.5, D - 0.45],
+            [1.7, D - 1.75],
+            [2.5, D - 1.75],
         ].forEach(([x, z]) => {
             box(x - 0.22, x + 0.22, tf + 0.42, tf + 0.46, z - 0.2, z + 0.2, M.alu, t);
             box(x - 0.22, x + 0.22, tf, tf + 0.42, z - 0.02, z + 0.02, M.alu, t);
@@ -665,6 +723,27 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
             foliage(0.42, M.leaf, x, tf + 0.85, z, t);
         });
     }
+    // vertical steel ladder from the terrace to the roof, fixed to the rear wall at the right end
+    // (past the kitchen window): rungs every 0.30 m, rails carried over the parapet and down to
+    // the roof as handholds, and a step on the roof side
+    {
+        const LX = [9.4, 9.8];
+        const zr0 = Z_RW1 + 0.15; // rails stand 0.15–0.20 m off the wall
+        const zr1 = zr0 + 0.05;
+        const yTop = PARA + 0.9;
+        const zBack = Z_RW1 - 0.55; // where the rails come down on the roof
+        for (const x of LX) {
+            box(x - 0.025, x + 0.025, H1 + 0.03, H2, zr0, zr1, M.steel, G.terrace);
+            box(x - 0.025, x + 0.025, H2, yTop, zr0, zr1, M.steel, G.roof);
+            box(x - 0.025, x + 0.025, yTop - 0.05, yTop, zBack, zr1, M.steel, G.roof);
+            box(x - 0.025, x + 0.025, ROOF + 0.04, yTop, zBack, zBack + 0.05, M.steel, G.roof);
+            for (let y = H1 + 1.0; y < PARA; y += 1.2)
+                box(x - 0.02, x + 0.02, y, y + 0.04, Z_RW1, zr0, M.steel, y < H2 ? G.terrace : G.roof);
+        }
+        for (let y = H1 + 0.3; y < PARA + 0.05; y += 0.3)
+            box(LX[0], LX[1], y, y + 0.03, zr0 + 0.01, zr1 - 0.01, M.steel, y < H2 ? G.terrace : G.roof);
+        box(LX[0] - 0.05, LX[1] + 0.05, ROOF + 0.04, ROOF + 0.3, zBack - 0.1, Z_RW1 - 0.2, M.steel, G.roof);
+    }
     /* ================= UPPER FLOOR ================= */
     // Street side: master bedroom with its en-suite, bedroom 2, and a work room that runs back to
     // the stair wall. Middle: hall, main bath, a corridor, and the stair behind its own door.
@@ -675,13 +754,12 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     /** Box whose z range is mirrored about the building depth (Revision 06 furniture, flipped). */
     const mbox = (x0, x1, y0, y1, z0, z1, mat, grp, o) => box(x0, x1, y0, y1, D - z1, D - z0, mat, grp, o);
     // interior floors
-    box(0.3, X_WORK, fl, fl + 0.02, Z_FW, ZB, M.oak, u, { cast: false }); // bedrooms
-    box(X_COR0, X_WORK, fl, fl + 0.02, ZB, Z_GARAGE, M.oak, u, { cast: false }); // hall
-    slab(toRight(X_WORK, Z_FW, Z_GARAGE, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false; // work room
+    box(0.3, X_SUITE, fl, fl + 0.02, Z_FW, ZB, M.oak, u, { cast: false }); // bedrooms
+    box(X_COR0, X_SUITE, fl, fl + 0.02, ZB, Z_GARAGE, M.oak, u, { cast: false }); // hall
+    slab(toRight(X_SUITE, Z_FW, Z_GARAGE, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false; // bedroom 2 + wardrobe
     box(X_COR0, XS, fl, fl + 0.02, Z_GARAGE, ZM, M.oak, u, { cast: false }); // corridor + stair landing
     box(XS, XL, fl, fl + 0.02, Z_STAIR0, F2[0], M.oak, u, { cast: false }); // landing beside flight 1
     box(XS, XR(ZM) - 0.3, fl, fl + 0.02, F2[1], ZM, M.oak, u, { cast: false }); // strip behind flight 2
-    box(0.3, X_COR0, fl, fl + 0.02, Z_B1, ZM, M.oak, u, { cast: false }); // living beside the bath
     slab(toRight(0.3, ZM, Z_RW0, 0.3), [], fl + 0.02, 0.02, M.oak, u).castShadow = false; // living + kitchen
     box(0.3, X_BATH, fl, fl + 0.03, Z_EN0 + 0.15, Z_B1, M.tile, u, { cast: false }); // both baths
     // side walls (blind)
@@ -690,8 +768,8 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     // street wall: two bedroom windows and the work-room window
     const streetOps = [
         [1.0, 3.9, fl + 0.9, fl + 2.35],
-        [5.2, 7.5, fl + 0.9, fl + 2.35],
-        [8.4, 9.95, fl + 0.9, fl + 2.35],
+        [5.2, 6.75, fl + 0.9, fl + 2.35],
+        [7.75, 9.95, fl + 0.9, fl + 2.35],
     ];
     wallX(0, W_FRONT, 0, Z_FW, fl, H2, streetOps, M.plaster, u);
     streetOps.forEach(([a, b, s, h]) => {
@@ -700,40 +778,49 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     });
     // wood cladding on the street facade above the garage
     wallX(4.4, XR(-0.05), -0.05, 0, fl, H2, streetOps.slice(1), M.clad, u);
-    // rear wall onto the terrace: living slider and kitchen slider
+    // rear wall onto the terrace. Living: a solid stretch for the air conditioner, a window and a
+    // glazed door to the terrace. Kitchen: one window, 0.25 m in from the right party wall.
+    const LIV_WIN = [1.6, 3.7];
+    const TER_DOOR = [4.0, 4.9];
+    const KIT_WIN = [6.0, 9.35];
+    const SILL = fl + 0.4; // both windows start 0.40 m above the floor
     const rearOps = [
-        [0.55, 3.95, fl, fl + 2.45],
-        [5.0, 9.6, fl, fl + 2.45],
+        [LIV_WIN[0], LIV_WIN[1], SILL, fl + 2.45],
+        [TER_DOOR[0], TER_DOOR[1], fl, fl + 2.3],
+        [KIT_WIN[0], KIT_WIN[1], SILL, fl + 2.45],
     ];
     wallX(0, XR(Z_RW0), Z_RW0, Z_RW1, fl, H2, rearOps, M.plaster, u);
     const zr = Z_RW0 + 0.15;
-    glazeX(0.55, 3.95, zr, fl, fl + 2.45, u, 2, 0);
-    glazeX(5.0, 9.6, zr, fl, fl + 2.45, u, 3, 0);
-    // timber reveal frame around the living opening
-    box(0.45, 4.05, fl + 2.45, fl + 2.6, Z_RW1, Z_RW1 + 0.06, M.clad, u);
-    box(0.45, 0.55, fl, fl + 2.6, Z_RW1, Z_RW1 + 0.06, M.clad, u);
-    box(3.95, 4.05, fl, fl + 2.6, Z_RW1, Z_RW1 + 0.06, M.clad, u);
-    // bedrooms | hall, with both bedroom doors
-    wallX(X_COR0, X_WORK - 0.15, Z_BED, ZB, fl, H2, [
-        [3.45, 4.25, fl, fl + 2.1],
-        [4.95, 5.75, fl, fl + 2.1],
-    ], M.wallIn, u);
+    [LIV_WIN, KIT_WIN].forEach(([a, b]) => {
+        glazeX(a, b, zr, SILL, fl + 2.45, u, b - a > 3 ? 3 : 2, 0);
+        box(a - 0.05, b + 0.05, SILL - 0.05, SILL, Z_RW0 - 0.2, Z_RW0, M.coping, u); // inner sill
+        box(a - 0.05, b + 0.05, SILL - 0.05, SILL, Z_RW1, Z_RW1 + 0.06, M.coping, u); // outer sill
+    });
+    glazeX(TER_DOOR[0], TER_DOOR[1], zr, fl, fl + 2.3, u, 1, 0);
+    box(TER_DOOR[0] + 0.07, TER_DOOR[0] + 0.1, fl + 1.0, fl + 1.2, zr - 0.08, zr - 0.04, M.chrome, u); // handle
+    box(TER_DOOR[0] - 0.05, TER_DOOR[1] + 0.05, fl, fl + 0.03, Z_RW0, Z_RW1, M.coping, u); // threshold
+    // master | hall, with the master door
+    wallX(X_COR0, X_B2, Z_BED, ZB, fl, H2, [[3.45, 4.25, fl, fl + 2.1]], M.wallIn, u);
     casingX(3.45, 4.25, Z_BED, ZB, fl + 2.1, u);
-    casingX(4.95, 5.75, Z_BED, ZB, fl + 2.1, u);
-    box(X_B2 - 0.15, X_B2, fl, H2, Z_FW, Z_BED, M.wallIn, u); // master | bedroom 2
-    // bedroom 2 / hall | work room, running back to the stair wall, with the work-room door
-    wallZ(Z_FW, Z_GARAGE, X_WORK - 0.15, X_WORK, fl, H2, [[5.4, 6.2, fl, fl + 2.1]], M.wallIn, u);
-    casingZ(5.4, 6.2, X_WORK - 0.17, X_WORK + 0.02, fl + 2.1, u);
+    box(X_B2 - 0.15, X_B2, fl, H2, Z_FW, Z_BED, M.wallIn, u); // master | work room
+    // work room | hall: the work room is 3.20 m deep and the hall widens behind it
+    wallX(X_B2, X_SUITE - 0.15, Z_WR, Z_WR + 0.15, fl, H2, [[4.95, 5.75, fl, fl + 2.1]], M.wallIn, u);
+    casingX(4.95, 5.75, Z_WR, Z_WR + 0.15, fl + 2.1, u);
+    // work room / hall | bedroom 2, running back to the stair wall, with the bedroom door just
+    // behind the work room, so the door opens into the bedroom, not the dressing area
+    const ZBD2 = Z_WR + 0.2; // bedroom 2 door
+    wallZ(Z_FW, Z_GARAGE, X_SUITE - 0.15, X_SUITE, fl, H2, [[ZBD2, ZBD2 + 0.8, fl, fl + 2.1]], M.wallIn, u);
+    casingZ(ZBD2, ZBD2 + 0.8, X_SUITE - 0.17, X_SUITE + 0.02, fl + 2.1, u);
     // master | en-suite, with the en-suite door
-    wallX(0.3, X_BATH, Z_EN0, Z_EN0 + 0.15, fl, H2, [[2.25, 3.0, fl, fl + 2.1]], M.wallIn, u);
-    casingX(2.25, 3.0, Z_EN0, Z_EN0 + 0.15, fl + 2.1, u);
+    wallX(0.3, X_BATH, Z_EN0, Z_EN0 + 0.15, fl, H2, [[1.5, 2.25, fl, fl + 2.1]], M.wallIn, u);
+    casingX(1.5, 2.25, Z_EN0, Z_EN0 + 0.15, fl + 2.1, u);
     box(0.3, X_BATH, fl, H2, Z_EN1, Z_EN1 + 0.15, M.wallIn, u); // en-suite | main bath
     // baths | master entry and corridor, with the main bath door; it runs on to the living wall
-    wallZ(Z_EN0, Z_LD + 0.15, X_BATH, X_COR0, fl, H2, [[6.05, 6.85, fl, fl + 2.1]], M.wallIn, u);
-    casingZ(6.05, 6.85, X_BATH - 0.02, X_COR0 + 0.02, fl + 2.1, u);
-    box(0.3, X_BATH, fl, H2, Z_B1, Z_LIV, M.wallIn, u); // main bath | living
+    const ZBD = Z_EN1 + 0.3; // main bath door
+    wallZ(Z_EN0, Z_LD, X_BATH, X_COR0, fl, H2, [[ZBD, ZBD + 0.8, fl, fl + 2.1]], M.wallIn, u);
+    casingZ(ZBD, ZBD + 0.8, X_BATH - 0.02, X_COR0 + 0.02, fl + 2.1, u);
     // corridor | living, with the living door just past the stair door
-    wallX(X_BATH, X_COR1 + 0.1, Z_LD, Z_LD + 0.15, fl, H2, [[3.7, 5.1, fl, fl + 2.1]], M.wallIn, u);
+    wallX(0.3, X_COR1 + 0.1, Z_LD, Z_LD + 0.15, fl, H2, [[3.7, 5.1, fl, fl + 2.1]], M.wallIn, u);
     casingX(3.7, 5.1, Z_LD, Z_LD + 0.15, fl + 2.1, u);
     // hall | stair (the stair sits behind it, so it stays put)
     box(X_COR1, XR(Z_GARAGE) - 0.15, fl, H2, Z_GARAGE, Z_STAIR0, M.wallIn, u);
@@ -742,6 +829,10 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     box(X_COR1 + 0.03, X_COR1 + 0.07, fl, fl + 2.1, F2[0] + 0.15, F2[1] - 0.1, M.walnut, u); // stair door
     box(X_COR1 + 0.07, X_COR1 + 0.1, fl + 0.95, fl + 1.0, F2[1] - 0.3, F2[1] - 0.2, M.chrome, u);
     box(X_COR1, XR(Z_STAIR1) - 0.15, fl, H2, Z_STAIR1, Z_HALL, M.wallIn, u); // stair | kitchen
+    // living | kitchen, in line with the corridor | stair wall, with the kitchen door near the front
+    const ZKD = Z_HALL + 0.1; // kitchen door
+    wallZ(Z_HALL, Z_RW0, X_COR1, X_COR1 + 0.1, fl, H2, [[ZKD, ZKD + 0.9, fl, fl + 2.1]], M.wallIn, u);
+    casingZ(ZKD, ZKD + 0.9, X_COR1 - 0.02, X_COR1 + 0.12, fl + 2.1, u);
     // guards around the stair opening
     box(XS, XL, fl, fl + 1.0, F2[0] - 0.015, F2[0] + 0.015, M.glassRail, u, { cast: false });
     box(XS, XL, fl + 0.97, fl + 1.0, F2[0] - 0.03, F2[0] + 0.03, M.oakFurn, u);
@@ -751,39 +842,53 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
         cast: false,
     });
     box(XS, XR(F2[1]) - 0.3, fl + 0.97, fl + 1.0, F2[1] - 0.03, F2[1] + 0.03, M.oakFurn, u);
+    // service shaft between the baths: vent grilles into both, access panel from the corridor
+    shaftWalls(fl, H2, u);
+    box(SH_X[0] + 0.25, SH_X[1] - 0.25, H2 - 0.6, H2 - 0.4, SH_Z[0] - 0.02, SH_Z[0], M.black, u);
+    box(SH_X[0] + 0.25, SH_X[1] - 0.25, H2 - 0.6, H2 - 0.4, SH_Z[1], SH_Z[1] + 0.02, M.black, u);
+    box(X_COR0, X_COR0 + 0.02, fl + 0.3, fl + 1.9, SH_Z[0] + 0.05, SH_Z[1] - 0.05, M.steel, u);
+    // small stair shaft, upper floor only, access panel facing the landing
+    shaftWalls(fl, H2, u, SH2_X, SH2_Z);
+    box(SH2_X[0] + 0.1, SH2_X[1] - 0.1, fl + 0.3, fl + 1.9, SH2_Z[1], SH2_Z[1] + 0.02, M.steel, u);
     /* upper furniture */
     const f = G.upperFurn;
     const F = fl + 0.02;
-    // living (Revision 06 furniture, flipped to face the back terrace)
-    mbox(0.6, 3.7, F, F + 0.01, 3.3, 6.2, M.rug, f, { cast: false });
-    mbox(0.5, 2.9, F, F + 0.42, 5.6, 6.5, M.sofa, f);
-    mbox(0.5, 2.9, F + 0.42, F + 0.85, 6.25, 6.5, M.sofa, f);
-    mbox(0.5, 0.7, F + 0.42, F + 0.62, 5.6, 6.5, M.sofa, f);
-    mbox(2.7, 2.9, F + 0.42, F + 0.62, 5.6, 6.5, M.sofa, f);
-    mbox(0.72, 1.68, F + 0.42, F + 0.52, 5.65, 6.23, M.linen, f);
-    mbox(1.72, 2.68, F + 0.42, F + 0.52, 5.65, 6.23, M.linen, f);
-    mbox(0.9, 1.3, F + 0.5, F + 0.82, 6, 6.22, M.clay, f);
-    mbox(2.2, 2.6, F + 0.5, F + 0.82, 6, 6.22, M.olive, f);
-    mbox(1.1, 2.4, F, F + 0.36, 4.2, 4.9, M.walnut, f); // coffee table
-    cyl(1.75, F + 0.36, F + 0.5, D - 4.55, 0.09, M.clay, f, 14, 0.06);
-    mbox(3.0, 3.75, F, F + 0.42, 3.6, 4.35, M.sofa, f); // armchair
-    mbox(3.6, 3.75, F + 0.42, F + 0.8, 3.6, 4.35, M.sofa, f);
-    mbox(0.3, 0.7, F, F + 0.5, 2.9, 4.9, M.walnut, f); // media unit on the party wall
-    mbox(0.3, 0.34, F + 0.9, F + 1.65, 3.3, 4.6, M.black, f);
-    cyl(0.6, F, F + 1.55, D - 5.0, 0.015, M.black, f, 8);
-    cyl(0.6, F + 1.45, F + 1.7, D - 5.0, 0.14, M.lampOn, f, 16, 0.18);
-    cyl(3.65, F, F + 0.45, D - 2.7, 0.17, M.pot, f, 14);
-    foliage(0.42, M.leaf, 3.65, F + 1.0, D - 2.7, f);
+    // living (5.2 × 3.4): media unit on the party wall, sofa facing it, clear of the door
+    const ZL = Z_LD + 0.15; // living starts
+    box(0.9, 3.4, F, F + 0.01, ZL + 0.3, ZL + 2.9, M.rug, f, { cast: false });
+    box(2.6, 3.5, F, F + 0.42, ZL + 0.4, ZL + 2.8, M.sofa, f); // sofa
+    box(3.25, 3.5, F + 0.42, F + 0.85, ZL + 0.4, ZL + 2.8, M.sofa, f);
+    box(2.6, 3.25, F + 0.42, F + 0.62, ZL + 0.4, ZL + 0.6, M.sofa, f);
+    box(2.6, 3.25, F + 0.42, F + 0.62, ZL + 2.6, ZL + 2.8, M.sofa, f);
+    box(2.63, 3.23, F + 0.42, F + 0.52, ZL + 0.62, ZL + 1.58, M.linen, f);
+    box(2.63, 3.23, F + 0.42, F + 0.52, ZL + 1.62, ZL + 2.58, M.linen, f);
+    box(3.0, 3.22, F + 0.5, F + 0.82, ZL + 0.8, ZL + 1.2, M.clay, f);
+    box(3.0, 3.22, F + 0.5, F + 0.82, ZL + 2.0, ZL + 2.4, M.olive, f);
+    box(1.35, 2.05, F, F + 0.36, ZL + 0.95, ZL + 2.25, M.walnut, f); // coffee table
+    cyl(1.7, F + 0.36, F + 0.5, ZL + 1.6, 0.09, M.clay, f, 14, 0.06);
+    box(0.3, 0.7, F, F + 0.5, ZL + 0.6, ZL + 2.6, M.walnut, f); // media unit on the party wall
+    box(0.3, 0.34, F + 0.9, F + 1.65, ZL + 0.95, ZL + 2.25, M.black, f);
+    cyl(0.6, F, F + 1.55, ZL + 0.3, 0.015, M.black, f, 8);
+    cyl(0.6, F + 1.45, F + 1.7, ZL + 0.3, 0.14, M.lampOn, f, 16, 0.18);
+    cyl(0.65, F, F + 0.45, Z_RW0 - 0.4, 0.17, M.pot, f, 14);
+    foliage(0.42, M.leaf, 0.65, F + 1.0, Z_RW0 - 0.4, f);
+    // air conditioner: indoor unit high on the solid stretch of the rear wall, outdoor unit on
+    // the terrace behind it
+    box(0.45, 1.4, F + 2.25, F + 2.55, Z_RW0 - 0.22, Z_RW0, M.white, f);
+    box(0.5, 1.35, F + 2.27, F + 2.3, Z_RW0 - 0.225, Z_RW0 - 0.22, M.black, f);
+    box(0.35, 1.15, F + 0.03, F + 0.63, Z_RW1 + 0.05, Z_RW1 + 0.35, M.white, f);
+    cyl(0.75, F + 0.32, F + 0.34, Z_RW1 + 0.36, 0.2, M.black, f, 20).rotation.x = Math.PI / 2;
     // kitchen along the stair-side wall, dining table between it and the terrace
     const ZK0 = Z_HALL; // kitchen run starts at the stair wall
     const ZK = ZK0 + 0.6;
-    box(5.9, 8.9, F, F + 0.86, ZK0, ZK, M.oakFurn, f);
-    box(5.9, 8.9, F + 0.86, F + 0.9, ZK0, ZK, M.counter, f);
-    box(5.9, 8.9, F + 0.9, F + 1.5, ZK0, ZK0 + 0.02, M.terracotta, f);
-    box(5.9, 8.9, F + 1.5, F + 2.25, ZK0, ZK0 + 0.35, M.oakFurn, f);
+    const XK0 = 6.55; // kitchen run starts clear of the kitchen door
+    box(XK0, 8.9, F, F + 0.86, ZK0, ZK, M.oakFurn, f);
+    box(XK0, 8.9, F + 0.86, F + 0.9, ZK0, ZK, M.counter, f);
+    box(XK0, 8.9, F + 0.9, F + 1.5, ZK0, ZK0 + 0.02, M.terracotta, f);
+    box(XK0, 8.9, F + 1.5, F + 2.25, ZK0, ZK0 + 0.35, M.oakFurn, f);
     box(8.9, XR(ZK) - 0.35, F, F + 2.25, ZK0, ZK + 0.05, M.white, f); // tall fridge unit
     box(7.8, 8.4, F + 0.9, F + 0.92, ZK - 0.52, ZK - 0.08, M.black, f); // hob
-    box(6.4, 6.6, F + 0.9, F + 0.96, ZK0 + 0.1, ZK0 + 0.25, M.chrome, f); // tap/sink
+    box(7.0, 7.2, F + 0.9, F + 0.96, ZK0 + 0.1, ZK0 + 0.25, M.chrome, f); // tap/sink
     // table set along the depth so the run along the stair wall keeps its clearance
     const DX = 7.0;
     const DZ0 = 10.5;
@@ -805,17 +910,17 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     });
     cyl(DX + 0.45, H2 - 0.9, H2, (DZ0 + DZ1) / 2, 0.004, M.black, f, 4);
     cyl(DX + 0.45, H2 - 1.12, H2 - 0.9, (DZ0 + DZ1) / 2, 0.04, M.lampOn, f, 20, 0.22);
-    // en-suite (2.85 × 2.00): walk-in shower, WC, vanity
+    // en-suite (2.85 × 1.80): walk-in shower, WC, vanity
     const E0 = Z_EN0 + 0.15;
     box(0.3, 1.3, F, F + 0.03, Z_EN1 - 0.95, Z_EN1, M.white, f, { cast: false }); // shower tray
     box(1.3, 1.32, F, F + 2.0, Z_EN1 - 0.95, Z_EN1 - 0.25, M.glassRail, f, { cast: false });
     cyl(0.8, F + 1.9, F + 1.95, Z_EN1 - 0.45, 0.12, M.chrome, f, 16);
     box(0.3, 0.9, F, F + 0.42, E0 + 0.25, E0 + 0.7, M.white, f); // WC
     box(0.3, 0.45, F + 0.42, F + 0.8, E0 + 0.25, E0 + 0.7, M.white, f);
-    box(X_BATH - 0.5, X_BATH, F + 0.5, F + 0.85, E0 + 0.85, E0 + 1.85, M.oakFurn, f); // vanity
-    box(X_BATH - 0.45, X_BATH - 0.05, F + 0.85, F + 0.9, E0 + 1.1, E0 + 1.6, M.white, f);
-    box(X_BATH - 0.02, X_BATH, F + 1.1, F + 1.9, E0 + 0.85, E0 + 1.85, M.chrome, f); // mirror
-    // main bath (2.85 × 2.05): tub with shower, vanity, WC, washing machine
+    box(X_BATH - 0.5, X_BATH, F + 0.5, F + 0.85, E0 + 0.45, E0 + 1.4, M.oakFurn, f); // vanity
+    box(X_BATH - 0.45, X_BATH - 0.05, F + 0.85, F + 0.9, E0 + 0.68, E0 + 1.18, M.white, f);
+    box(X_BATH - 0.02, X_BATH, F + 1.1, F + 1.9, E0 + 0.45, E0 + 1.4, M.chrome, f); // mirror
+    // main bath (2.85 × 2.45): tub with shower, vanity, WC, washing machine
     const B0 = Z_EN1 + 0.15;
     box(0.3, 2.0, F, F + 0.55, Z_B1 - 0.75, Z_B1, M.white, f); // bathtub
     box(0.4, 1.9, F + 0.5, F + 0.56, Z_B1 - 0.67, Z_B1 - 0.08, M.glass, f, { cast: false });
@@ -836,29 +941,32 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     cyl((X_COR0 + X_COR1) / 2, H2 - 0.06, H2, 7.0, 0.18, M.lampOn, f, 24);
     // stair landing: shoe cabinet beside flight 1
     box(XS + 0.2, XL - 0.2, F, F + 0.9, Z_STAIR0, Z_STAIR0 + 0.4, M.oakFurn, f);
-    // work room: desk under the street window, shelving on the bedroom wall, sofa further back
-    const zDesk0 = Z_FW + 0.05;
-    const zDesk1 = zDesk0 + 0.7;
-    const xDesk1 = XR(zDesk1) - 0.35;
-    box(X_WORK + 0.4, xDesk1, F + 0.73, F + 0.77, zDesk0, zDesk1, M.oakFurn, f);
-    box(X_WORK + 0.42, X_WORK + 0.48, F, F + 0.73, zDesk0 + 0.05, zDesk1 - 0.05, M.oakFurn, f);
-    box(xDesk1 - 0.06, xDesk1, F, F + 0.73, zDesk0 + 0.05, zDesk1 - 0.05, M.oakFurn, f);
-    box(8.75, 9.35, F + 0.77, F + 1.15, zDesk0 + 0.05, zDesk0 + 0.08, M.black, f); // monitor
-    box(9.6, 9.65, F + 0.77, F + 1.2, zDesk0 + 0.15, zDesk0 + 0.2, M.black, f); // task lamp
-    cyl(9.6, F + 1.15, F + 1.25, zDesk0 + 0.3, 0.07, M.lampOn, f, 12, 0.03);
-    box(8.85, 9.3, F + 0.44, F + 0.48, zDesk1 + 0.25, zDesk1 + 0.7, M.walnut, f); // chair
-    box(9.05, 9.1, F, F + 0.44, zDesk1 + 0.45, zDesk1 + 0.5, M.steel, f);
-    box(8.85, 9.3, F + 0.48, F + 0.95, zDesk1 + 0.66, zDesk1 + 0.7, M.walnut, f);
-    box(X_WORK, X_WORK + 0.35, F, F + 2.0, zDesk1 + 0.3, Z_BED - 0.45, M.oakFurn, f); // shelving
-    for (let y = F + 0.4; y < F + 2.0; y += 0.4)
-        box(X_WORK + 0.35, X_WORK + 0.36, y, y + 0.02, zDesk1 + 0.3, Z_BED - 0.45, M.walnut, f);
-    const xSofa1 = XR(5.6) - 0.35;
-    box(xSofa1 - 0.8, xSofa1, F, F + 0.42, 3.4, 5.4, M.sofa, f);
-    box(xSofa1 - 0.2, xSofa1, F + 0.42, F + 0.85, 3.4, 5.4, M.sofa, f);
-    box(xSofa1 - 0.75, xSofa1 - 0.2, F + 0.42, F + 0.52, 3.45, 5.35, M.linen, f);
-    box(8.5, xSofa1 - 0.9, F, F + 0.01, 3.3, 5.5, M.rug, f, { cast: false });
-    // master (4.32 × 4.20 less the en-suite corner): bed on the party wall, wardrobe on the
-    // bedroom 2 wall, entry beside the en-suite
+    // work room (2.33 × 3.20): desk under the street window, shelving on the master wall, sofa on
+    // the bedroom wall
+    {
+        const xw0 = X_B2;
+        const xw1 = X_SUITE - 0.15;
+        const zD0 = Z_FW + 0.05;
+        const zD1 = zD0 + 0.7;
+        box(xw0 + 0.3, xw1 - 0.3, F + 0.73, F + 0.77, zD0, zD1, M.oakFurn, f); // desk
+        box(xw0 + 0.32, xw0 + 0.38, F, F + 0.73, zD0 + 0.05, zD1 - 0.05, M.oakFurn, f);
+        box(xw1 - 0.38, xw1 - 0.32, F, F + 0.73, zD0 + 0.05, zD1 - 0.05, M.oakFurn, f);
+        box(5.6, 6.2, F + 0.77, F + 1.15, zD0 + 0.05, zD0 + 0.08, M.black, f); // monitor
+        box(6.45, 6.5, F + 0.77, F + 1.2, zD0 + 0.15, zD0 + 0.2, M.black, f); // task lamp
+        cyl(6.45, F + 1.15, F + 1.25, zD0 + 0.3, 0.07, M.lampOn, f, 12, 0.03);
+        box(5.68, 6.12, F + 0.44, F + 0.48, zD1 + 0.25, zD1 + 0.7, M.walnut, f); // chair
+        box(5.88, 5.93, F, F + 0.44, zD1 + 0.45, zD1 + 0.5, M.steel, f);
+        box(5.68, 6.12, F + 0.48, F + 0.95, zD1 + 0.66, zD1 + 0.7, M.walnut, f);
+        box(xw0, xw0 + 0.35, F, F + 2.0, zD1 + 0.3, Z_WR - 0.9, M.oakFurn, f); // shelving, clear of the door
+        for (let y = F + 0.4; y < F + 2.0; y += 0.4)
+            box(xw0 + 0.35, xw0 + 0.36, y, y + 0.02, zD1 + 0.3, Z_WR - 0.9, M.walnut, f);
+        box(xw1 - 0.8, xw1, F, F + 0.42, 1.5, 3.4, M.sofa, f); // sofa
+        box(xw1 - 0.2, xw1, F + 0.42, F + 0.85, 1.5, 3.4, M.sofa, f);
+        box(xw1 - 0.75, xw1 - 0.2, F + 0.42, F + 0.52, 1.55, 3.35, M.linen, f);
+        box(5.3, xw1 - 0.9, F, F + 0.01, 1.5, 3.3, M.rug, f, { cast: false });
+    }
+    // master (4.32 × 4.00): bed on the party wall, wardrobe on the bedroom 2 wall, en-suite door
+    // in the back wall
     box(X_B2 - 0.75, X_B2 - 0.15, F, H2 - 0.05, 0.8, 3.3, M.oakFurn, f);
     for (let z = 1.3; z < 3.3; z += 0.5)
         box(X_B2 - 0.76, X_B2 - 0.75, F + 0.05, H2 - 0.08, z - 0.005, z + 0.005, M.walnut, f);
@@ -874,26 +982,55 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
         cyl(0.52, F + 0.5, F + 0.75, z + 0.22, 0.09, M.lampOn, f, 14, 0.12);
     });
     box(1.0, 3.3, F, F + 0.01, 0.8, 3.1, M.rug, f, { cast: false });
-    // bedroom 2 (3.11 × 4.20): bed against the work-room wall, wardrobe on the hall wall
-    const xb1 = X_WORK - 0.15;
-    box(5.9, xb1, F, H2 - 0.05, Z_BED - 0.6, Z_BED, M.oakFurn, f);
-    for (let x = 6.4; x < xb1 - 0.1; x += 0.5)
-        box(x - 0.005, x + 0.005, F + 0.05, H2 - 0.08, Z_BED - 0.61, Z_BED - 0.6, M.walnut, f);
-    box(xb1 - 0.08, xb1, F, F + 1.15, 1.05, 2.85, M.sofa, f); // headboard
-    box(xb1 - 2.1, xb1 - 0.08, F, F + 0.32, 1.1, 2.8, M.walnut, f);
-    box(xb1 - 2.08, xb1 - 0.1, F + 0.32, F + 0.55, 1.15, 2.75, M.white, f);
-    box(xb1 - 2.1, xb1 - 0.65, F + 0.55, F + 0.6, 1.13, 2.77, M.olive, f);
-    box(xb1 - 0.55, xb1 - 0.15, F + 0.55, F + 0.72, 1.25, 2.6, M.white, f);
+    // bedroom 2, one open room: bed with its head on the right party wall at the street end, an
+    // open dressing area at the back (clothes rails and shelves, no doors), no wall between them
+    {
+        const xh = XR(2.1) - 0.3; // inner face of the party wall at the bed
+        const bz0 = 1.3;
+        const bz1 = 2.9;
+        box(xh - 0.08, xh, F, F + 1.15, bz0 - 0.05, bz1 + 0.05, M.sofa, f); // headboard
+        box(xh - 2.08, xh - 0.08, F, F + 0.32, bz0, bz1, M.walnut, f);
+        box(xh - 2.05, xh - 0.1, F + 0.32, F + 0.55, bz0 + 0.02, bz1 - 0.02, M.white, f);
+        box(xh - 2.08, xh - 0.65, F + 0.55, F + 0.6, bz0, bz1, M.olive, f);
+        box(xh - 0.55, xh - 0.15, F + 0.55, F + 0.72, bz0 + 0.1, bz0 + 0.7, M.white, f);
+        box(xh - 0.55, xh - 0.15, F + 0.55, F + 0.72, bz1 - 0.7, bz1 - 0.1, M.white, f);
+        [bz0 - 0.5, bz1 + 0.05].forEach((z) => {
+            box(XR(z) - 0.75, XR(z) - 0.32, F, F + 0.5, z, z + 0.45, M.walnut, f);
+            cyl(XR(z) - 0.53, F + 0.5, F + 0.75, z + 0.22, 0.09, M.lampOn, f, 14, 0.12);
+        });
+        box(7.8, xh - 0.6, F, F + 0.01, 1.0, 3.2, M.rug, f, { cast: false });
+        // open dressing area: a clothes rail and shelves along the stair wall, shelves on the party wall
+        const xr = XR(Z_GARAGE) - 0.3;
+        const zr = Z_GARAGE - 0.6;
+        box(X_SUITE + 0.1, xr - 0.1, F, F + 0.04, zr, Z_GARAGE, M.oakFurn, f); // plinth
+        box(X_SUITE + 0.1, xr - 0.1, F + 2.0, F + 2.04, zr, Z_GARAGE, M.oakFurn, f); // top shelf
+        for (let x = X_SUITE + 0.1; x < xr; x += (xr - X_SUITE - 0.24) / 3)
+            box(x, x + 0.04, F, F + 2.04, zr, Z_GARAGE, M.oakFurn, f); // uprights
+        cyl((X_SUITE + xr) / 2, F + 1.75, F + 1.77, Z_GARAGE - 0.3, 0.015, M.chrome, f, 6);
+        box(X_SUITE + 0.2, xr - 0.2, F + 1.74, F + 1.76, Z_GARAGE - 0.31, Z_GARAGE - 0.29, M.chrome, f); // rail
+        const cloth = [M.linen, M.clay, M.olive, M.sofa, M.white];
+        for (let i = 0, x = X_SUITE + 0.25; x < xr - 0.3; i++, x += 0.12)
+            box(x, x + 0.06, F + 0.9, F + 1.72, Z_GARAGE - 0.5, Z_GARAGE - 0.1, cloth[i % 5], f);
+        box(xr - 0.4, xr, F, F + 1.8, ZB + 0.1, zr - 0.2, M.oakFurn, f); // open shelves on the party wall
+        for (let y = F + 0.4; y < F + 1.8; y += 0.4)
+            box(xr - 0.4, xr, y, y + 0.02, ZB + 0.1, zr - 0.2, M.walnut, f);
+    }
     /* ================= ROOF ================= */
     const roofPoly = toRight(0, 0, Z_RW1, 0);
     const skys = [
         rect(7.2, Z_STAIR0 + 0.4, 9.0, Z_STAIR1 - 0.4), // stair
-        rect(1.5, Z_EN0 + 0.6, 2.5, Z_EN1 - 0.35), // en-suite
-        rect(0.9, Z_EN1 + 0.75, 2.3, Z_B1 - 0.85), // main bath
-        rect(4.2, ZB + 0.35, 5.6, Z_GARAGE - 0.35), // hall
-        rect(6.6, DZ0 + 0.1, 8.3, DZ1 - 0.1), // dining
+        rect(X_COR0 + 0.45, 7.3, X_COR1 - 0.45, 8.4), // corridor, past its ceiling light
     ];
-    slab(roofPoly, skys, ROOF, ROOF - H2, M.slab, G.roof);
+    slab(roofPoly, [...skys, shaftHole, shaft2Hole], ROOF, ROOF - H2, M.slab, G.roof);
+    // both shafts on the roof: upstand, louvres and a cap; cables to the solar panels leave here
+    [
+        [SH_X, SH_Z],
+        [SH2_X, SH2_Z],
+    ].forEach(([sx, sz]) => {
+        shaftWalls(ROOF, ROOF + 0.7, G.roof, sx, sz);
+        box(sx[0] - 0.01, sx[1] + 0.01, ROOF + 0.45, ROOF + 0.65, sz[0] - 0.01, sz[1] + 0.01, M.black, G.roof);
+        box(sx[0] - 0.05, sx[1] + 0.05, ROOF + 0.7, ROOF + 0.76, sz[0] - 0.05, sz[1] + 0.05, M.coping, G.roof);
+    });
     skys.forEach((s) => {
         const [x0, z0] = s[0];
         const [x1, z1] = s[2];
@@ -920,12 +1057,71 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
     // wood cladding continues up the slab edge and parapet above the garage
     box(4.4, XR(-0.05), H2, PARA, -0.05, 0, M.clad, G.roof);
     // roof plant + gravel
-    slab(toRight(0.2, 0.2, Z_RW1 - 0.2, 0.2), skys, ROOF + 0.04, 0.04, M.concrete, G.roof).castShadow = false;
+    slab(toRight(0.2, 0.2, Z_RW1 - 0.2, 0.2), [
+        ...skys,
+        rect(SH_X[0], SH_Z[0], SH_X[1], SH_Z[1]),
+        rect(SH2_X[0], SH2_Z[0], SH2_X[1], SH2_Z[1]),
+    ], ROOF + 0.04, 0.04, M.concrete, G.roof).castShadow = false;
     box(4.0, 5.2, ROOF, ROOF + 0.7, 10.6, 11.6, M.chrome, G.roof);
     box(1.0, 2.2, ROOF, ROOF + 0.35, 11.5, 12.2, M.white, G.roof);
-    // solar water heater / pv frame
-    box(1.0, 3.6, ROOF + 0.3, ROOF + 0.36, 9.7, 11.1, M.carGlass, G.roof);
-    box(1.0, 3.6, ROOF, ROOF + 0.3, 11.0, 11.1, M.steel, G.roof);
+    // solar panels (for demonstration): two rows of nine 1.0 × 1.7 m panels on the street half of
+    // the roof, tilted 15° toward the street, clear of the roof lights and the shaft cap. Their
+    // cables go down the service shaft.
+    {
+        const pvTex = tex(256, (g2, sz) => {
+            g2.fillStyle = '#1c2a44';
+            g2.fillRect(0, 0, sz, sz);
+            g2.strokeStyle = 'rgba(190,205,225,0.35)';
+            g2.lineWidth = 2;
+            for (let i = 1; i < 6; i++) {
+                g2.beginPath();
+                g2.moveTo((i * sz) / 6, 0);
+                g2.lineTo((i * sz) / 6, sz);
+                g2.stroke();
+            }
+            for (let j = 1; j < 10; j++) {
+                g2.beginPath();
+                g2.moveTo(0, (j * sz) / 10);
+                g2.lineTo(sz, (j * sz) / 10);
+                g2.stroke();
+            }
+        });
+        const pvMat = new THREE.MeshStandardMaterial({
+            map: pvTex,
+            roughness: 0.25,
+            metalness: 0.35,
+        });
+        const PW = 1.0;
+        const PD = 1.7;
+        const tilt = (15 * Math.PI) / 180;
+        const y0 = ROOF + 0.3; // lower (street-side) edge
+        [1.6, 3.9].forEach((zc) => {
+            for (let k = 0; k < 9; k++) {
+                const xc = 0.6 + PW / 2 + k * (PW + 0.02);
+                const panel = new THREE.Mesh(new THREE.BoxGeometry(PW, 0.04, PD), [
+                    M.alu,
+                    M.alu,
+                    pvMat,
+                    M.alu,
+                    M.alu,
+                    M.alu,
+                ]);
+                panel.rotation.x = tilt;
+                panel.position.set(xc, y0 + (PD / 2) * Math.sin(tilt), -zc);
+                panel.castShadow = true;
+                G.roof.add(panel);
+            }
+            const zf = zc - (PD / 2) * Math.cos(tilt);
+            const zb = zc + (PD / 2) * Math.cos(tilt);
+            const xEnd = 0.6 + 9 * (PW + 0.02);
+            for (let x = 0.65; x < xEnd; x += 2.04) {
+                box(x, x + 0.05, ROOF, y0, zf - 0.03, zf + 0.03, M.steel, G.roof); // front legs
+                box(x, x + 0.05, ROOF, y0 + PD * Math.sin(tilt), zb - 0.03, zb + 0.03, M.steel, G.roof);
+            }
+            box(0.6, xEnd, ROOF + 0.04, ROOF + 0.08, zf - 0.03, zf + 0.03, M.steel, G.roof); // rails
+            box(0.6, xEnd, ROOF + 0.04, ROOF + 0.08, zb - 0.03, zb + 0.03, M.steel, G.roof);
+        });
+    }
     /* ================= PROVISIONAL REAR GARDEN STAIR ================= */
     {
         const r = G.rearStair;
@@ -953,7 +1149,7 @@ function foliage(radius,mat,x,y,z,grp){const m=new THREE.Mesh(new THREE.Icosahed
         });
         box(8.35, 9.85, fl, fl + 1.0, D + 1.18, D + 1.22, M.steel, r);
         box(9.81, 9.85, fl, fl + 1.0, D, D + 1.2, M.steel, r);
-        box(9.0, 9.85, 0, fl - 0.12, D + 1.1, D + 1.18, M.steel, r);
+        box(9.77, 9.85, 0, fl - 0.12, D + 1.1, D + 1.18, M.steel, r); // post, clear of the garden door
     }
 
 /* ================= LIGHTS ================= */
@@ -965,7 +1161,7 @@ Object.assign(sun.shadow.camera,{left:-16,right:16,top:18,bottom:-18,near:1,far:
 const fill=new THREE.DirectionalLight(0xcfe0ff,0.35);fill.position.set(14,10,-30);scene.add(fill);
 const warm=[];
 function pl(x,y,z,i,d,c){const l=new THREE.PointLight(c||0xffd7a8,i,d||6,2);l.position.copy(V(x,y,z));scene.add(l);warm.push([l,i]);return l;}
-pl(2.1,H2-0.3,10.3,0.9);pl(7.9,H2-0.3,10.8,0.8);pl(4.3,H2-0.3,7.0,0.6);pl(2.25,H2-0.3,2.2,0.6);pl(6.1,H2-0.3,2.2,0.6);pl(1.7,H2-0.3,4.75,0.5);pl(1.7,H2-0.3,6.9,0.5);pl(5.5,H2-0.3,5.5,0.5);pl(9.2,H2-0.3,2.2,0.5);pl(9.2,H2-0.3,4.8,0.5);
+pl(2.1,H2-0.3,10.3,0.9);pl(7.9,H2-0.3,10.8,0.8);pl(4.3,H2-0.3,7.0,0.6);pl(2.25,H2-0.3,2.2,0.6);pl(6.1,H2-0.3,2.2,0.6);pl(1.7,H2-0.3,5.35,0.5);pl(1.7,H2-0.3,7.6,0.5);pl(5.5,H2-0.3,5.5,0.5);pl(9.2,H2-0.3,2.2,0.5);pl(9.2,H2-0.3,4.8,0.5);
 pl(7.2,W1-0.3,4.0,0.8,8,0xfff3e6);pl(2.4,W1-0.3,5.0,0.7,8,0xf4f6ff);pl(5.0,W1-0.3,12.8,0.9,9,0xf4f6ff);
 
 /* sky */
@@ -976,21 +1172,28 @@ scene.fog=new THREE.Fog(0xdfe3e2,45,120);
 const labels=[
   ['Storage','≈ 91 m² + WC',2.5,1.2,5.0,'ground'],
   ['Rear storage','9.4–9.7 × 5.45',5.0,1.2,12.0,'ground'],
-  ['WC (storage)','1.35 × 1.55, door from rear storage',5.6,1.2,8.0,'ground'],
+  ['Shower room','1.35 × 2.0, WC + shower, door from rear storage',5.6,1.2,7.9,'ground'],
   ['Free space','2.4 m wide between WC and stair',7.6,1.2,6.8,'ground'],
+  ['Duct + cable tray','under the ceiling, from the shaft',3.4,2.7,6.0,'ground'],
+  ['Panel / inverter','solar cables end here',5.2,1.4,5.6,'ground'],
+  ['Garden door','from the rear storage',8.9,1.2,14.0,'ground'],
   ['Private garage','5.1 × 8.5, 2 cars side by side',7.5,1.9,2.6,'ground'],
   ['L-stair','1.1–1.4 wide, turns left',9.3,2.2,6.5,'ground'],
   ['Back terrace','10.1 → 10.0 × 2.0',4.6,H1+.4,13.7,'upper'],
-  ['Living','5.2 × 3.55–4.3',2.0,H1+.4,11.0,'upper'],
-  ['Kitchen / dining','4.35–4.5 × 3.2',8.6,H1+.4,11.6,'upper'],
+  ['Roof ladder','from the terrace',9.6,H1+.4,13.1,'upper'],
+  ['Living','5.2 × 3.4',2.0,H1+.4,11.0,'upper'],
+  ['Kitchen / dining','4.25–4.4 × 3.4, own door',8.6,H1+.4,11.6,'upper'],
   ['Stair door','stair closed off',6.1,H1+.4,8.5,'upper'],
+  ['Service shaft','0.4 × 1.0, vents both baths',2.65,H1+.4,6.2,'upper'],
+  ['Stair shaft','0.4 × 0.5, roof → upper floor',5.85,H1+.4,6.45,'upper'],
   ['Corridor','2.20 m wide',4.3,H1+.4,7.3,'upper'],
-  ['Bath','2.85 × 2.05, tub + shower',1.65,H1+.4,6.9,'upper'],
-  ['En-suite','2.85 × 2.0, shower',1.65,H1+.4,4.7,'upper'],
-  ['Hall','1.65 m deep',5.0,H1+.4,5.5,'upper'],
-  ['Master bedroom','4.32 × 4.2 ≈ 15.4 m²',2.3,H1+.4,2.0,'upper'],
-  ['Bedroom','3.11 × 4.2 ≈ 13.1 m²',6.3,H1+.4,2.0,'upper'],
-  ['Work room','2.15–2.45 × 6.0 ≈ 13.7 m²',9.2,H1+.4,2.3,'upper'],
+  ['Bath','2.85 × 2.45, tub + shower',1.65,H1+.4,7.6,'upper'],
+  ['En-suite','2.85 × 1.8, shower',1.65,H1+.4,5.3,'upper'],
+  ['Hall','1.65 m deep',5.0,H1+.4,5.3,'upper'],
+  ['Master bedroom','4.32 × 4.0 ≈ 17.3 m²',2.3,H1+.4,2.0,'upper'],
+  ['Work room','2.33 × 3.2 ≈ 7.5 m²',5.9,H1+.4,1.8,'upper'],
+  ['Bedroom','3.0–3.2 × 5.8 ≈ 17.8 m², open',8.6,H1+.4,3.4,'upper'],
+  ['Dressing area','open, part of the bedroom',8.6,H1+.4,5.2,'upper'],
   ['Garden stair','provisional, from the terrace',8.2,H1+.4,15.4,'upper','warn']
 ].map(([t,s,x,y,z,lv,cls])=>{const d=document.createElement('div');d.className='lbl'+(cls?' '+cls:'');d.innerHTML=t+(s?`<small>${s}</small>`:'');d.style.display='none';document.body.appendChild(d);return{d,p:V(x,y,z),lv};});
 
@@ -1002,8 +1205,8 @@ const VIEWS={
   terrace:{cam:V(9.4,H1+1.6,14.2),tgt:V(2.0,H1+1.2,12.9),mode:'all'},
   upper:{cam:V(5.2,23,-1.5),tgt:V(5.2,H1,6.6),mode:'upper'},
   ground:{cam:V(5.2,21,-1.5),tgt:V(5.2,0,6.4),mode:'ground'},
-  living:{cam:V(4.6,H1+1.55,9.0),tgt:V(1.2,H1+1.05,12.1),mode:'all'},
-  kitchen:{cam:V(4.2,H1+1.6,12.1),tgt:V(8.4,H1+1.0,9.4),mode:'all'},
+  living:{cam:V(5.0,H1+1.6,9.4),tgt:V(1.6,H1+1.1,12.4),mode:'all'},
+  kitchen:{cam:V(9.5,H1+1.6,12.0),tgt:V(6.0,H1+1.0,9.6),mode:'all'},
   bedroom:{cam:V(4.1,H1+1.6,3.8),tgt:V(1.0,H1+0.9,1.4),mode:'all'},
   lobby:{cam:V(4.3,H1+1.6,4.9),tgt:V(4.6,H1+1.1,8.7),mode:'all'},
   garage:{cam:V(5.9,2.5,0.45),tgt:V(8.5,0.9,7.0),mode:'all'}
