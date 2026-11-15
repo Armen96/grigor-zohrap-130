@@ -73,8 +73,8 @@ export const PROJECT = {
 
   summary:
     'A new building replacing the old one on the plot: storage and a ' +
-    'private garage on the ground floor; above it the house, with living and kitchen on the ' +
-    'street terrace and bedrooms toward the garden. ' +
+    'private garage on the ground floor; above it the house, with bedrooms toward the street ' +
+    'and living and kitchen on a back terrace toward the garden. ' +
     'Concept only; dimensions in metres.',
 
   factGroups: [
@@ -123,13 +123,13 @@ export const PROJECT = {
     {
       title: 'Upper floor',
       facts: [
-        { label: 'Enclosed house', value: '131.4 m²', detail: 'gross' },
+        { label: 'Enclosed house', value: '132.8 m²', detail: 'gross' },
         {
-          label: 'Front terrace',
-          value: '21.5 m²',
-          detail: 'gross; 10.80 → 10.69 × 2.00 m',
+          label: 'Back terrace',
+          value: '20.1 m²',
+          detail: 'gross; 10.11 → 10.00 × 2.00 m, over the rear storage',
         },
-        { label: 'Upper floor total', value: '152.9 m²', detail: '131.4 + 21.5, gross' },
+        { label: 'Upper floor total', value: '152.9 m²', detail: '132.8 + 20.1, gross' },
       ],
     },
     {
@@ -137,18 +137,26 @@ export const PROJECT = {
       facts: [
         {
           label: 'Living + kitchen / dining',
-          value: '≈ 41 m²',
-          detail: 'across the front; living 4.30 m deep',
+          value: '≈ 35 m²',
+          detail: 'across the back, onto the terrace; living 3.55–4.30 m, kitchen 3.20 m deep',
         },
-        { label: 'Bedrooms (2)', value: '≈ 15.0 m² each', detail: '4.05 × 3.70 m clear' },
+        {
+          label: 'Bedrooms (2)',
+          value: '14.5 + 13.0 m²',
+          detail: '3.92 × 3.70 and 3.51 × 3.70 m clear; street side',
+        },
         {
           label: 'Bath',
           value: '2.70 × 3.80 m',
           detail: 'tub, shower, washing machine; roof light',
         },
         { label: 'Corridor', value: '2.35 m', detail: 'clear width; the stair door opens onto it' },
-        { label: 'Hall', value: '1.35 m', detail: 'clear' },
-        { label: 'Passage to garden', value: '1.00–1.20 m', detail: 'clear' },
+        { label: 'Hall', value: '2.15 m', detail: 'clear depth; wardrobe along the bedroom wall' },
+        {
+          label: 'Work room',
+          value: '≈ 8.7 m²',
+          detail: '2.25–2.45 × 3.70 m clear; street window; door from the hall',
+        },
       ],
     },
   ] as readonly FactGroup[],
@@ -174,14 +182,14 @@ export const PROJECT = {
       title: 'Home route through the garage, behind a stair door',
       body:
         'Garage (pass door in the garage door) → L-stair (inside the garage, turns left) → stair ' +
-        'door → corridor → living and kitchen at the front; bedrooms through the hall. No ' +
-        'access to the house through the storage.',
+        'door → corridor → living and kitchen at the back; bedrooms at the front through the ' +
+        'hall. No access to the house through the storage.',
     },
     {
       title: 'Provisional garden stair',
       body:
-        'A 1.00–1.20 m passage beside the bedrooms leads to the garden door. The external stair ' +
-        'down to the garden is reserved only. It is not usable until levels, an external ' +
+        'The external stair from the back terrace down to the garden is reserved only. It is ' +
+        'not usable until levels, an external ' +
         'landing or stair, and boundary clearances are verified.',
     },
   ] as readonly DesignNote[],
@@ -189,8 +197,8 @@ export const PROJECT = {
   /** Rev 05 "Design basis / read before using this sketch", verbatim in substance. */
   toVerify: [
     'Coverage: only 40% of the land may be built on. 40% of 385.05 m² (ownership certificate) = 154.0 m². At 14.70 m deep the footprint is 152.9 m² (39.7%); Revision 05 at 17.00 m was 176.8 m² (45.9%).',
-    'Confirm with the municipality which area counts (ground footprint, or also the 2.00 m terrace over the garage) and whether a surveyed area replaces 385.05 m².',
-    'Width check at the rear wall: 0.30 + 4.05 + 0.15 + 4.05 + 0.15 + 1.00 + 0.30 = 10.00 m. At the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
+    'Confirm with the municipality which area counts (ground footprint, or also the 2.00 m back terrace over the rear storage) and whether a surveyed area replaces 385.05 m².',
+    'Width check upstairs at the street: 0.30 + 3.92 + 0.15 + 3.51 + 0.15 + 2.47 + 0.30 = 10.80 m (work room 2.45 m clear inside the street wall). Ground floor at the street: 0.30 + 4.47 + 0.15 + 5.56 + 0.30 = 10.80 m. Garage 5.10 m clear at its rear wall, 8.50 m deep; car spaces 2 × 2.20 = 4.40 m; 2.40 m between the WC and the stair.',
     'The new enclosure is conceptual: verify roof, structural support, headroom, ventilation and fire separation from the garage and storage.',
     'Tape measurement only: which boundary angles, boundary clearances and planning approval must be confirmed against the cadastral survey.',
   ] as readonly string[],
